@@ -10,13 +10,14 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { orderService, useOrderList } from '@domain';
+import { useOrderList, useCreateOrder, orderService } from '@domain';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
 function AppContent() {
   const { data: orders = [], isLoading, error } = useOrderList();
+  const { mutate: createOrder } = useCreateOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -25,10 +26,9 @@ function AppContent() {
       Alert.alert('Preencha título e descrição');
       return;
     }
-    orderService.create({ title: title.trim(), description: description.trim() });
+    createOrder({ title: title.trim(), description: description.trim() });
     setTitle('');
     setDescription('');
-    queryClient.invalidateQueries({ queryKey: ['orders'] });
   }
 
   function handleDelete(id: string) {
