@@ -10,14 +10,16 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useOrderList, useCreateOrder, orderService } from '@domain';
+import { useOrderList, useCreateOrder, useDeleteOrder } from '@domain';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
 const queryClient = new QueryClient();
 
+
 function AppContent() {
   const { data: orders = [], isLoading, error } = useOrderList();
   const { mutate: createOrder } = useCreateOrder();
+  const { mutate: deleteOrder } = useDeleteOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
 
@@ -32,8 +34,7 @@ function AppContent() {
   }
 
   function handleDelete(id: string) {
-    orderService.remove(id);
-    queryClient.invalidateQueries({ queryKey: ['orders'] });
+    deleteOrder(id);
   }
 
   if (isLoading) {
