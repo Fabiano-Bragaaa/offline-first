@@ -8,7 +8,7 @@ type useFetchDataReturn<TD> = {
 
 type useAppQueryParams<TD> = {
   queryKey: (string | number | undefined | null)[];
-  queryFn: () => Promise<TD>;
+  queryFn: () => TD | Promise<TD>;
 };
 
 export function useAppQuery<TD>({
