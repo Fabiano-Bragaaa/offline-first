@@ -1,23 +1,27 @@
 import { getRealm } from '@infra';
 import { Order } from './order-types';
 
-function getAll() {
+async function getAll(): Promise<Order[]> {
   const realm = getRealm();
 
-  return realm.objects<Order>('ServiceOrder').filtered('deleted == false');
+  const results = realm
+    .objects<Order>('ServiceOrder')
+    .filtered('deleted == false');
+
+  return Array.from(results);
 }
 
-function create({
+async function create({
   title,
   description,
 }: {
   title: string;
   description: string;
-}) {
+}): Promise<Order> {
   const realm = getRealm();
 
-  realm.write(() => {
-    realm.create('ServiceOrder', {
+  const created = realm.write(() => {
+    return realm.create<Order>('ServiceOrder', {
       id: Date.now().toString(),
       title: title.trim(),
       description: description.trim(),
@@ -30,14 +34,15 @@ function create({
       deleted: false,
     });
   });
+
+  return created;
 }
 
-function remove(id: string) {
+async function remove(id: string): Promise<void> {
   const realm = getRealm();
 
   realm.write(() => {
     const order = realm.objectForPrimaryKey<Order>('ServiceOrder', id);
-
     if (!order) return;
 
     order.deleted = true;
