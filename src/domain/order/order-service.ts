@@ -1,9 +1,10 @@
 import { orderLocal } from './order-local';
+import { Order } from './order-types';
 
-function getAll() {
-  const results = orderLocal.getAll();
+async function getAll(): Promise<Order[]> {
+  const results = await orderLocal.getAll();
 
-  return Array.from(results);
+  return results;
 }
 
 function create({
@@ -12,11 +13,11 @@ function create({
 }: {
   title: string;
   description: string;
-}): void {
+}): Promise<Order> {
   return orderLocal.create({ title, description });
 }
 
-function remove(id: string): void {
+async function remove(id: string): Promise<void> {
   return orderLocal.remove(id);
 }
 
