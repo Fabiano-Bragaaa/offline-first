@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -10,93 +10,103 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { orderService, Order } from '@domain';
+import { orderService, useOrderList } from '@domain';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 
-function App() {
-  const [orders, setOrders] = useState<Order[]>([]);
+const queryClient = new QueryClient();
+
+function AppContent() {
+  const { data: orders = [], isLoading, error } = useOrderList();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
-
-  function loadOrders() {
-    const results = orderService.getAll();
-    setOrders(Array.from(results));
-  }
-
-  useEffect(() => {
-    loadOrders();
-  }, []);
 
   function handleAdd() {
     if (!title.trim() || !description.trim()) {
       Alert.alert('Preencha título e descrição');
       return;
     }
-
-    orderService.create({ title, description });
-
+    orderService.create({ title: title.trim(), description: description.trim() });
     setTitle('');
     setDescription('');
-    loadOrders();
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
   }
 
-  function handleDelete(id: string): void {
+  function handleDelete(id: string) {
     orderService.remove(id);
-    loadOrders();
+    queryClient.invalidateQueries({ queryKey: ['orders'] });
   }
 
-  const queryClient = new QueryClient();
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.empty}>Carregando...</Text>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <Text style={styles.empty}>Erro ao carregar ordens.</Text>
+      </SafeAreaView>
+    );
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <QueryClientProvider client={queryClient}>
-        <StatusBar barStyle="dark-content" />
+      <StatusBar barStyle="dark-content" />
 
-        <Text style={styles.header}>Ordens de Serviço</Text>
+      <Text style={styles.header}>Ordens de Serviço</Text>
 
-        <View style={styles.form}>
-          <TextInput
-            style={styles.input}
-            placeholder="Título"
-            value={title}
-            onChangeText={setTitle}
-          />
-          <TextInput
-            style={styles.input}
-            placeholder="Descrição"
-            value={description}
-            onChangeText={setDescription}
-          />
-          <TouchableOpacity style={styles.button} onPress={handleAdd}>
-            <Text style={styles.buttonText}>Adicionar</Text>
-          </TouchableOpacity>
-        </View>
-
-        <FlatList
-          data={orders}
-          keyExtractor={item => item.id}
-          contentContainerStyle={styles.list}
-          ListEmptyComponent={
-            <Text style={styles.empty}>Nenhuma ordem cadastrada.</Text>
-          }
-          renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={styles.cardContent}>
-                <Text style={styles.cardTitle}>{item.title}</Text>
-                <Text style={styles.cardDescription}>{item.description}</Text>
-                <Text style={styles.cardStatus}>{item.status}</Text>
-              </View>
-              <TouchableOpacity
-                style={styles.deleteButton}
-                onPress={() => handleDelete(item.id)}
-              >
-                <Text style={styles.deleteButtonText}>✕</Text>
-              </TouchableOpacity>
-            </View>
-          )}
+      <View style={styles.form}>
+        <TextInput
+          style={styles.input}
+          placeholder="Título"
+          value={title}
+          onChangeText={setTitle}
         />
-      </QueryClientProvider>
+        <TextInput
+          style={styles.input}
+          placeholder="Descrição"
+          value={description}
+          onChangeText={setDescription}
+        />
+        <TouchableOpacity style={styles.button} onPress={handleAdd}>
+          <Text style={styles.buttonText}>Adicionar</Text>
+        </TouchableOpacity>
+      </View>
+
+      <FlatList
+        data={orders}
+        keyExtractor={item => item.id}
+        contentContainerStyle={styles.list}
+        ListEmptyComponent={
+          <Text style={styles.empty}>Nenhuma ordem cadastrada.</Text>
+        }
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <View style={styles.cardContent}>
+              <Text style={styles.cardTitle}>{item.title}</Text>
+              <Text style={styles.cardDescription}>{item.description}</Text>
+              <Text style={styles.cardStatus}>{item.status}</Text>
+            </View>
+            <TouchableOpacity
+              style={styles.deleteButton}
+              onPress={() => handleDelete(item.id)}>
+              <Text style={styles.deleteButtonText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        )}
+      />
     </SafeAreaView>
+  );
+}
+
+function App() {
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AppContent />
+    </QueryClientProvider>
   );
 }
 
