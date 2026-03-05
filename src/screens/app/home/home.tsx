@@ -8,13 +8,13 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import { useOrderList, useCreateOrder, useDeleteOrder } from '@domain';
+import { useOrderList, useCreateOrder } from '@domain';
 import { FloatingActionButton, Page } from '@components';
+import { AppScreenProps } from '@routes';
 
-export function Home() {
+export function Home({ navigation }: AppScreenProps<'Home'>) {
   const { data: orders = [] } = useOrderList();
   const { mutate: createOrder } = useCreateOrder();
-  const { mutate: deleteOrder } = useDeleteOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
@@ -29,10 +29,6 @@ export function Home() {
     setDescription('');
     setModalVisible(false);
   }
-
-  function handleDelete(id: string) {
-    deleteOrder(id);
-  }
   return (
     <Page >
       <Text className="text-[22px] font-bold text-center my-4 text-neutral-900">
@@ -43,7 +39,6 @@ export function Home() {
         data={orders}
         keyExtractor={item => item.id}
         contentContainerStyle={{
-          paddingHorizontal: 16,
           gap: 10,
           paddingBottom: 100,
         }}
@@ -53,7 +48,11 @@ export function Home() {
           </Text>
         }
         renderItem={({ item }) => (
-          <View className="bg-white rounded-xl p-3.5 flex-row items-center border border-gray-200">
+          <TouchableOpacity
+            className="bg-white rounded-xl p-3.5 flex-row items-center border border-gray-200"
+            onPress={() => navigation.navigate('Details', { id: item.id })}
+            activeOpacity={0.7}
+          >
             <View className="flex-1">
               <Text className="text-base font-semibold text-neutral-900">
                 {item.title}
@@ -65,13 +64,7 @@ export function Home() {
                 {item.status}
               </Text>
             </View>
-            <TouchableOpacity
-              className="p-2"
-              onPress={() => handleDelete(item.id)}
-            >
-              <Text className="text-base text-red-500 font-semibold">✕</Text>
-            </TouchableOpacity>
-          </View>
+          </TouchableOpacity>
         )}
       />
 
