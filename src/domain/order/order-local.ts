@@ -51,8 +51,16 @@ async function remove(id: string): Promise<void> {
   });
 }
 
+async function getById(id: string): Promise<Order | null> {
+  const realm = getRealm();
+  const order = realm.objectForPrimaryKey<Order>('ServiceOrder', id);
+  if (!order || order.deleted) return null;
+  return order;
+}
+
 export const orderLocal = {
   getAll,
+  getById,
   create,
   remove,
 };

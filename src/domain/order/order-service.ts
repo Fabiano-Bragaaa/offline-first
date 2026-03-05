@@ -17,12 +17,17 @@ function create({
   return orderLocal.create({ title, description });
 }
 
+async function getById(id: string): Promise<Order | null> {
+  return orderLocal.getById(id);
+}
+
 async function remove(id: string): Promise<void> {
   return orderLocal.remove(id);
 }
 
 export const orderService = {
   getAll,
+  getById,
   create,
   remove,
 };
