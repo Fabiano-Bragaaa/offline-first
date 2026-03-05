@@ -3,12 +3,11 @@ import {
   Alert,
   FlatList,
   Modal,
-  TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useOrderList, useCreateOrder } from '@domain';
-import { Button, FloatingActionButton, Page, Text } from '@components';
+import { Button, FloatingActionButton, Page, Text, TextInput } from '@components';
 import { AppScreenProps } from '@routes';
 
 export function Home({ navigation }: AppScreenProps<'Home'>) {
@@ -79,14 +78,12 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
               Nova Ordem
             </Text>
             <TextInput
-              className="bg-neutral-50 rounded-lg px-3 py-2.5 text-base border border-gray-300"
-              placeholder="Título"
+              placeholder="Ex: Troca de óleo"
               value={title}
               onChangeText={setTitle}
             />
             <TextInput
-              className="bg-neutral-50 rounded-lg px-3 py-2.5 text-base border border-gray-300"
-              placeholder="Descrição"
+              placeholder="Ex: Veículo Honda Civic"
               value={description}
               onChangeText={setDescription}
             />

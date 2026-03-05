@@ -22,7 +22,7 @@ export function Button({
   loading = false,
   disabled = false,
   className,
-  ...rest
+  ...buttonProps
 }: ButtonProps) {
   const isDisabled = disabled || loading;
 
@@ -34,7 +34,7 @@ export function Button({
         buttonContainer({ preset, disabled: isDisabled }),
         className,
       )}
-      {...rest}
+      {...buttonProps}
     >
       {loading ? (
         <ActivityIndicator
