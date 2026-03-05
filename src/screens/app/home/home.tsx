@@ -4,8 +4,6 @@ import {
   FlatList,
   Modal,
   SafeAreaView,
-  StatusBar,
-  StyleSheet,
   Text,
   TextInput,
   TouchableOpacity,
@@ -39,44 +37,61 @@ export function Home() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.empty}>Carregando...</Text>
+      <SafeAreaView className="flex-1 bg-neutral-100">
+        <Text className="text-center text-gray-400 mt-10 text-base">
+          Carregando...
+        </Text>
       </SafeAreaView>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
-        <Text style={styles.empty}>Erro ao carregar ordens.</Text>
+      <SafeAreaView className="flex-1 bg-blac">
+        <Text className="text-center text-gray-400 mt-10 text-base">
+          Erro ao carregar ordens.
+        </Text>
       </SafeAreaView>
     );
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <StatusBar barStyle="dark-content" />
-
-      <Text style={styles.header}>Ordens de Serviço</Text>
+    <SafeAreaView className="flex-1 bg-neutral-100">
+      <Text className="text-[22px] font-bold text-center my-4 text-neutral-900">
+        Ordens de Serviço
+      </Text>
 
       <FlatList
         data={orders}
         keyExtractor={item => item.id}
-        contentContainerStyle={styles.list}
+        contentContainerStyle={{
+          paddingHorizontal: 16,
+          gap: 10,
+          paddingBottom: 100,
+        }}
         ListEmptyComponent={
-          <Text style={styles.empty}>Nenhuma ordem cadastrada.</Text>
+          <Text className="text-center text-gray-400 mt-10 text-base">
+            Nenhuma ordem cadastrada.
+          </Text>
         }
         renderItem={({ item }) => (
-          <View style={styles.card}>
-            <View style={styles.cardContent}>
-              <Text style={styles.cardTitle}>{item.title}</Text>
-              <Text style={styles.cardDescription}>{item.description}</Text>
-              <Text style={styles.cardStatus}>{item.status}</Text>
+          <View className="bg-white rounded-xl p-3.5 flex-row items-center border border-gray-200">
+            <View className="flex-1">
+              <Text className="text-base font-semibold text-neutral-900">
+                {item.title}
+              </Text>
+              <Text className="text-sm text-neutral-600 mt-0.5">
+                {item.description}
+              </Text>
+              <Text className="text-xs text-[#4F6EF7] mt-1 font-medium">
+                {item.status}
+              </Text>
             </View>
             <TouchableOpacity
-              style={styles.deleteButton}
-              onPress={() => handleDelete(item.id)}>
-              <Text style={styles.deleteButtonText}>✕</Text>
+              className="p-2"
+              onPress={() => handleDelete(item.id)}
+            >
+              <Text className="text-base text-red-500 font-semibold">✕</Text>
             </TouchableOpacity>
           </View>
         )}
@@ -86,32 +101,41 @@ export function Home() {
         visible={modalVisible}
         transparent
         animationType="fade"
-        onRequestClose={() => setModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Nova Ordem</Text>
+        onRequestClose={() => setModalVisible(false)}
+      >
+        <View className="flex-1 bg-black/40 justify-center items-center">
+          <View className="bg-white rounded-2xl p-6 w-[85%] gap-3">
+            <Text className="text-lg font-bold text-neutral-900 mb-1">
+              Nova Ordem
+            </Text>
             <TextInput
-              style={styles.input}
+              className="bg-neutral-50 rounded-lg px-3 py-2.5 text-base border border-gray-300"
               placeholder="Título"
               value={title}
               onChangeText={setTitle}
             />
             <TextInput
-              style={styles.input}
+              className="bg-neutral-50 rounded-lg px-3 py-2.5 text-base border border-gray-300"
               placeholder="Descrição"
               value={description}
               onChangeText={setDescription}
             />
-            <View style={styles.modalActions}>
+            <View className="flex-row gap-2.5 mt-1">
               <TouchableOpacity
-                style={[styles.modalButton, styles.cancelButton]}
-                onPress={() => setModalVisible(false)}>
-                <Text style={styles.cancelButtonText}>Cancelar</Text>
+                className="flex-1 rounded-lg py-3 items-center bg-gray-200"
+                onPress={() => setModalVisible(false)}
+              >
+                <Text className="text-neutral-600 font-semibold text-base">
+                  Cancelar
+                </Text>
               </TouchableOpacity>
               <TouchableOpacity
-                style={[styles.modalButton, styles.confirmButton]}
-                onPress={handleAdd}>
-                <Text style={styles.confirmButtonText}>Adicionar</Text>
+                className="flex-1 rounded-lg py-3 items-center bg-[#4F6EF7]"
+                onPress={handleAdd}
+              >
+                <Text className="text-white font-semibold text-base">
+                  Adicionar
+                </Text>
               </TouchableOpacity>
             </View>
           </View>
@@ -129,119 +153,3 @@ export function Home() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-  },
-  header: {
-    fontSize: 22,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginVertical: 16,
-    color: '#1A1A1A',
-  },
-  list: {
-    paddingHorizontal: 16,
-    gap: 10,
-    paddingBottom: 100,
-  },
-  empty: {
-    textAlign: 'center',
-    color: '#999',
-    marginTop: 40,
-    fontSize: 15,
-  },
-  card: {
-    backgroundColor: '#FFF',
-    borderRadius: 10,
-    padding: 14,
-    flexDirection: 'row',
-    alignItems: 'center',
-    borderWidth: 1,
-    borderColor: '#EEE',
-  },
-  cardContent: {
-    flex: 1,
-  },
-  cardTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#1A1A1A',
-  },
-  cardDescription: {
-    fontSize: 13,
-    color: '#555',
-    marginTop: 2,
-  },
-  cardStatus: {
-    fontSize: 12,
-    color: '#4F6EF7',
-    marginTop: 4,
-    fontWeight: '500',
-  },
-  deleteButton: {
-    padding: 8,
-  },
-  deleteButtonText: {
-    fontSize: 16,
-    color: '#E74C3C',
-    fontWeight: '600',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.4)',
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  modalContent: {
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    padding: 24,
-    width: '85%',
-    gap: 12,
-  },
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#1A1A1A',
-    marginBottom: 4,
-  },
-  input: {
-    backgroundColor: '#F9F9F9',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#DDD',
-  },
-  modalActions: {
-    flexDirection: 'row',
-    gap: 10,
-    marginTop: 4,
-  },
-  modalButton: {
-    flex: 1,
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  cancelButton: {
-    backgroundColor: '#F0F0F0',
-  },
-  cancelButtonText: {
-    color: '#555',
-    fontWeight: '600',
-    fontSize: 15,
-  },
-  confirmButton: {
-    backgroundColor: '#4F6EF7',
-  },
-  confirmButtonText: {
-    color: '#FFF',
-    fontWeight: '600',
-    fontSize: 15,
-  },
-});
