@@ -1,8 +1,8 @@
 import { useMutation } from '@tanstack/react-query';
 
 export type useAppMutationOptions<TD> = {
-  onSuccess: (data: TD) => void;
-  onError: (error: Error) => void;
+  onSuccess?: (data: TD) => void;
+  onError?: (error: Error) => void;
 };
 
 type useAppMutationReturn<TD, TV> = {
