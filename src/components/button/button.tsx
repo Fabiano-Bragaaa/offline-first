@@ -6,9 +6,9 @@ import {
 import { twMerge } from 'tailwind-merge';
 
 import { Text } from '../text/text';
-import { buttonContainer, buttonLabel } from './button-presets';
+import { buttonContainer, buttonIndicatorColor, buttonLabel } from './button-presets';
 
-export type ButtonPreset = 'primary' | 'outline';
+export type ButtonPreset = 'primary' | 'outline' | 'destructive';
 
 export type ButtonProps = TouchableOpacityProps & {
   title: string;
@@ -25,6 +25,7 @@ export function Button({
   ...buttonProps
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const indicatorColor = buttonIndicatorColor[preset];
 
   return (
     <TouchableOpacity
@@ -37,9 +38,7 @@ export function Button({
       {...buttonProps}
     >
       {loading ? (
-        <ActivityIndicator
-          color={preset === 'primary' ? '#FFFFFF' : '#4F6EF7'}
-        />
+        <ActivityIndicator color={indicatorColor} />
       ) : (
         <Text className={buttonLabel({ preset, disabled: isDisabled })}>
           {title}

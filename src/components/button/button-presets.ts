@@ -5,8 +5,9 @@ export const buttonContainer = cva(
   {
     variants: {
       preset: {
-        primary: 'bg-[#4F6EF7]',
-        outline: 'border border-[#4F6EF7] bg-transparent',
+        primary: 'bg-[#7C3AED]',
+        outline: 'border border-[#7C3AED] bg-transparent',
+        destructive: 'bg-red-500',
       },
       disabled: {
         true: '',
@@ -16,6 +17,7 @@ export const buttonContainer = cva(
     compoundVariants: [
       { preset: 'primary', disabled: true, class: 'bg-neutral-300' },
       { preset: 'outline', disabled: true, class: 'border-neutral-300' },
+      { preset: 'destructive', disabled: true, class: 'bg-neutral-300' },
     ],
     defaultVariants: {
       preset: 'primary',
@@ -24,12 +26,19 @@ export const buttonContainer = cva(
   },
 );
 
+export const buttonIndicatorColor: Record<string, string> = {
+  primary: '#FFFFFF',
+  outline: '#7C3AED',
+  destructive: '#FFFFFF',
+};
+
 export const buttonLabel = cva('text-base font-semibold', {
-  variants: {
-    preset: {
-      primary: 'text-white',
-      outline: 'text-[#4F6EF7]',
-    },
+    variants: {
+      preset: {
+        primary: 'text-white',
+        outline: 'text-[#7C3AED]',
+        destructive: 'text-white',
+      },
     disabled: {
       true: 'text-neutral-400',
       false: '',
