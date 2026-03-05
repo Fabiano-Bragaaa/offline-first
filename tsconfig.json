@@ -1,25 +1,60 @@
 {
   "extends": "@react-native/typescript-config",
   "compilerOptions": {
-    "types": ["jest"],
+    "types": [
+      "jest"
+    ],
     "strict": true,
     "baseUrl": "./",
     "paths": {
-      "@assets": ["./src/assets"],
-      "@components": ["./src/components"],
-      "@routes": ["./src/routes"],
-      "@screens": ["./src/screens"],
-      "@utils": ["./src/utils"],
-      "@theme": ["./src/theme"],
-      "@hooks": ["./src/hooks"],
-      "@translate": ["./src/translate"],
-      "@domain": ["./src/domain"],
-      "@services": ["./src/services"],
-      "@api": ["./src/api"],
-      "@infra": ["./src/infra"],
-      "@errors": ["./src/errors"]
+      "@assets": [
+        "./src/assets"
+      ],
+      "@components": [
+        "./src/components"
+      ],
+      "@routes": [
+        "./src/routes"
+      ],
+      "@screens": [
+        "./src/screens"
+      ],
+      "@utils": [
+        "./src/utils"
+      ],
+      "@theme": [
+        "./src/theme"
+      ],
+      "@hooks": [
+        "./src/hooks"
+      ],
+      "@translate": [
+        "./src/translate"
+      ],
+      "@domain": [
+        "./src/domain"
+      ],
+      "@services": [
+        "./src/services"
+      ],
+      "@api": [
+        "./src/api"
+      ],
+      "@infra": [
+        "./src/infra"
+      ],
+      "@errors": [
+        "./src/errors"
+      ]
     }
   },
-  "include": ["**/*.ts", "**/*.tsx"],
-  "exclude": ["**/node_modules", "**/Pods"]
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "nativewind-env.d.ts"
+  ],
+  "exclude": [
+    "**/node_modules",
+    "**/Pods"
+  ]
 }
