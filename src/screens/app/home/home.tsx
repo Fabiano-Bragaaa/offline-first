@@ -8,7 +8,7 @@ import {
   View,
 } from 'react-native';
 import { useOrderList, useCreateOrder } from '@domain';
-import { FloatingActionButton, Page, Text } from '@components';
+import { Button, FloatingActionButton, Page, Text } from '@components';
 import { AppScreenProps } from '@routes';
 
 export function Home({ navigation }: AppScreenProps<'Home'>) {
@@ -91,22 +91,13 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
               onChangeText={setDescription}
             />
             <View className="flex-row gap-2.5 mt-1">
-              <TouchableOpacity
-                className="flex-1 rounded-lg py-3 items-center bg-gray-200"
+              <Button
+                title="Cancelar"
+                preset="outline"
+                className="flex-1"
                 onPress={() => setModalVisible(false)}
-              >
-                <Text variant="body" className="text-neutral-600 font-semibold">
-                  Cancelar
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                className="flex-1 rounded-lg py-3 items-center bg-[#4F6EF7]"
-                onPress={handleAdd}
-              >
-                <Text variant="body" className="text-white font-semibold">
-                  Adicionar
-                </Text>
-              </TouchableOpacity>
+              />
+              <Button title="Adicionar" preset="primary" className="flex-1" onPress={handleAdd} />
             </View>
           </View>
         </View>
