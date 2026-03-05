@@ -1,11 +1,11 @@
 import { getRealm } from '@infra';
-import { Order } from './order-types';
+import type { OrderRaw } from './order-types';
 
-async function getAll(): Promise<Order[]> {
+async function getAll(): Promise<OrderRaw[]> {
   const realm = getRealm();
 
   const results = realm
-    .objects<Order>('ServiceOrder')
+    .objects<OrderRaw>('ServiceOrder')
     .filtered('deleted == false');
 
   return Array.from(results);
@@ -17,11 +17,11 @@ async function create({
 }: {
   title: string;
   description: string;
-}): Promise<Order> {
+}): Promise<OrderRaw> {
   const realm = getRealm();
 
   const created = realm.write(() => {
-    return realm.create<Order>('ServiceOrder', {
+    return realm.create<OrderRaw>('ServiceOrder', {
       id: Date.now().toString(),
       title: title.trim(),
       description: description.trim(),
@@ -42,7 +42,7 @@ async function remove(id: string): Promise<void> {
   const realm = getRealm();
 
   realm.write(() => {
-    const order = realm.objectForPrimaryKey<Order>('ServiceOrder', id);
+    const order = realm.objectForPrimaryKey<OrderRaw>('ServiceOrder', id);
     if (!order) return;
 
     order.deleted = true;
@@ -51,9 +51,9 @@ async function remove(id: string): Promise<void> {
   });
 }
 
-async function getById(id: string): Promise<Order | null> {
+async function getById(id: string): Promise<OrderRaw | null> {
   const realm = getRealm();
-  const order = realm.objectForPrimaryKey<Order>('ServiceOrder', id);
+  const order = realm.objectForPrimaryKey<OrderRaw>('ServiceOrder', id);
   if (!order || order.deleted) return null;
   return order;
 }

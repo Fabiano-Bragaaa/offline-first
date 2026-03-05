@@ -1,21 +1,21 @@
 import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { useGetOrder, useDeleteOrder } from '@domain';
+import { useGetOrder, useDeleteOrder, type OrderStatus } from '@domain';
 import { Button, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 
 import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-confirm-modal';
 
-const STATUS_LABEL: Record<string, string> = {
-  Pending: 'Pendente',
-  'In Progress': 'Em andamento',
-  Completed: 'Concluído',
+const STATUS_LABEL: Record<OrderStatus, string> = {
+  pending: 'Pendente',
+  in_progress: 'Em andamento',
+  completed: 'Concluído',
 };
 
-const STATUS_COLOR: Record<string, string> = {
-  Pending: 'bg-yellow-100 text-yellow-700',
-  'In Progress': 'bg-violet-100 text-violet-700',
-  Completed: 'bg-green-100 text-green-700',
+const STATUS_COLOR: Record<OrderStatus, string> = {
+  pending: 'bg-yellow-100 text-yellow-700',
+  in_progress: 'bg-violet-100 text-violet-700',
+  completed: 'bg-green-100 text-green-700',
 };
 
 export function Details({ route, navigation }: AppScreenProps<'Details'>) {
@@ -94,7 +94,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
             Responsável
           </Text>
           <Text variant="body" className="text-neutral-700">
-            {order.assignedTo}
+            {order.assigned_to}
           </Text>
         </View>
 
@@ -103,7 +103,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
             Criado em
           </Text>
           <Text variant="body" className="text-neutral-700">
-            {new Date(order.createdAt).toLocaleDateString('pt-BR')}
+            {new Date(order.created_at).toLocaleDateString('pt-BR')}
           </Text>
         </View>
       </View>
