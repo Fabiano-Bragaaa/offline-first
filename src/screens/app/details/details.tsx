@@ -1,5 +1,4 @@
-import { Page } from '@components';
-import { Text } from 'react-native';
+import { Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 
 export function Details({ route }: AppScreenProps<'Details'>) {
@@ -7,7 +6,7 @@ export function Details({ route }: AppScreenProps<'Details'>) {
 
   return (
     <Page>
-      <Text className="text-base text-neutral-900">ID: {id}</Text>
+      <Text variant="body">ID: {id}</Text>
     </Page>
   );
 }

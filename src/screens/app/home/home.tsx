@@ -3,13 +3,12 @@ import {
   Alert,
   FlatList,
   Modal,
-  Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useOrderList, useCreateOrder } from '@domain';
-import { FloatingActionButton, Page } from '@components';
+import { FloatingActionButton, Page, Text } from '@components';
 import { AppScreenProps } from '@routes';
 
 export function Home({ navigation }: AppScreenProps<'Home'>) {
@@ -31,7 +30,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
   }
   return (
     <Page >
-      <Text className="text-[22px] font-bold text-center my-4 text-neutral-900">
+      <Text variant="heading" className="text-center my-4">
         Ordens de Serviço
       </Text>
 
@@ -43,7 +42,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
           paddingBottom: 100,
         }}
         ListEmptyComponent={
-          <Text className="text-center text-gray-400 mt-10 text-base">
+          <Text variant="caption" className="text-center text-gray-400 mt-10">
             Nenhuma ordem cadastrada.
           </Text>
         }
@@ -54,13 +53,13 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
             activeOpacity={0.7}
           >
             <View className="flex-1">
-              <Text className="text-base font-semibold text-neutral-900">
+              <Text variant="body" className="font-semibold text-neutral-900">
                 {item.title}
               </Text>
-              <Text className="text-sm text-neutral-600 mt-0.5">
+              <Text variant="caption" className="text-neutral-600 mt-0.5">
                 {item.description}
               </Text>
-              <Text className="text-xs text-[#4F6EF7] mt-1 font-medium">
+              <Text variant="label" className="text-[#4F6EF7] mt-1">
                 {item.status}
               </Text>
             </View>
@@ -76,7 +75,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
       >
         <View className="flex-1 bg-black/40 justify-center items-center">
           <View className="bg-white rounded-2xl p-6 w-[85%] gap-3">
-            <Text className="text-lg font-bold text-neutral-900 mb-1">
+            <Text variant="subheading" className="mb-1">
               Nova Ordem
             </Text>
             <TextInput
@@ -96,7 +95,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
                 className="flex-1 rounded-lg py-3 items-center bg-gray-200"
                 onPress={() => setModalVisible(false)}
               >
-                <Text className="text-neutral-600 font-semibold text-base">
+                <Text variant="body" className="text-neutral-600 font-semibold">
                   Cancelar
                 </Text>
               </TouchableOpacity>
@@ -104,7 +103,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
                 className="flex-1 rounded-lg py-3 items-center bg-[#4F6EF7]"
                 onPress={handleAdd}
               >
-                <Text className="text-white font-semibold text-base">
+                <Text variant="body" className="text-white font-semibold">
                   Adicionar
                 </Text>
               </TouchableOpacity>
