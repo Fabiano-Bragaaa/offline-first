@@ -3,17 +3,16 @@ import {
   Alert,
   FlatList,
   Modal,
-  SafeAreaView,
   Text,
   TextInput,
   TouchableOpacity,
   View,
 } from 'react-native';
 import { useOrderList, useCreateOrder, useDeleteOrder } from '@domain';
-import { FloatingActionButton } from '@components';
+import { FloatingActionButton, Page } from '@components';
 
 export function Home() {
-  const { data: orders = [], isLoading, error } = useOrderList();
+  const { data: orders = [] } = useOrderList();
   const { mutate: createOrder } = useCreateOrder();
   const { mutate: deleteOrder } = useDeleteOrder();
   const [title, setTitle] = useState('');
@@ -34,29 +33,8 @@ export function Home() {
   function handleDelete(id: string) {
     deleteOrder(id);
   }
-
-  if (isLoading) {
-    return (
-      <SafeAreaView className="flex-1 bg-neutral-100">
-        <Text className="text-center text-gray-400 mt-10 text-base">
-          Carregando...
-        </Text>
-      </SafeAreaView>
-    );
-  }
-
-  if (error) {
-    return (
-      <SafeAreaView className="flex-1 bg-blac">
-        <Text className="text-center text-gray-400 mt-10 text-base">
-          Erro ao carregar ordens.
-        </Text>
-      </SafeAreaView>
-    );
-  }
-
   return (
-    <SafeAreaView className="flex-1 bg-neutral-100">
+    <Page >
       <Text className="text-[22px] font-bold text-center my-4 text-neutral-900">
         Ordens de Serviço
       </Text>
@@ -150,6 +128,6 @@ export function Home() {
           },
         ]}
       />
-    </SafeAreaView>
+    </Page>
   );
 }
