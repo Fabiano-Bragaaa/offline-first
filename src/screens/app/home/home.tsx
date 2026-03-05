@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import {
   Alert,
   FlatList,
+  Modal,
   SafeAreaView,
   StatusBar,
   StyleSheet,
@@ -11,6 +12,7 @@ import {
   View,
 } from 'react-native';
 import { useOrderList, useCreateOrder, useDeleteOrder } from '@domain';
+import { FloatingActionButton } from '@components';
 
 export function Home() {
   const { data: orders = [], isLoading, error } = useOrderList();
@@ -18,6 +20,7 @@ export function Home() {
   const { mutate: deleteOrder } = useDeleteOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [modalVisible, setModalVisible] = useState(false);
 
   function handleAdd() {
     if (!title.trim() || !description.trim()) {
@@ -27,6 +30,7 @@ export function Home() {
     createOrder({ title: title.trim(), description: description.trim() });
     setTitle('');
     setDescription('');
+    setModalVisible(false);
   }
 
   function handleDelete(id: string) {
@@ -55,24 +59,6 @@ export function Home() {
 
       <Text style={styles.header}>Ordens de Serviço</Text>
 
-      <View style={styles.form}>
-        <TextInput
-          style={styles.input}
-          placeholder="Título"
-          value={title}
-          onChangeText={setTitle}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder="Descrição"
-          value={description}
-          onChangeText={setDescription}
-        />
-        <TouchableOpacity style={styles.button} onPress={handleAdd}>
-          <Text style={styles.buttonText}>Adicionar</Text>
-        </TouchableOpacity>
-      </View>
-
       <FlatList
         data={orders}
         keyExtractor={item => item.id}
@@ -95,6 +81,51 @@ export function Home() {
           </View>
         )}
       />
+
+      <Modal
+        visible={modalVisible}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Nova Ordem</Text>
+            <TextInput
+              style={styles.input}
+              placeholder="Título"
+              value={title}
+              onChangeText={setTitle}
+            />
+            <TextInput
+              style={styles.input}
+              placeholder="Descrição"
+              value={description}
+              onChangeText={setDescription}
+            />
+            <View style={styles.modalActions}>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.cancelButton]}
+                onPress={() => setModalVisible(false)}>
+                <Text style={styles.cancelButtonText}>Cancelar</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.modalButton, styles.confirmButton]}
+                onPress={handleAdd}>
+                <Text style={styles.confirmButtonText}>Adicionar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      <FloatingActionButton
+        actions={[
+          {
+            label: '📋',
+            onPress: () => setModalVisible(true),
+          },
+        ]}
+      />
     </SafeAreaView>
   );
 }
@@ -111,34 +142,10 @@ const styles = StyleSheet.create({
     marginVertical: 16,
     color: '#1A1A1A',
   },
-  form: {
-    paddingHorizontal: 16,
-    gap: 8,
-    marginBottom: 16,
-  },
-  input: {
-    backgroundColor: '#FFF',
-    borderRadius: 8,
-    paddingHorizontal: 12,
-    paddingVertical: 10,
-    fontSize: 15,
-    borderWidth: 1,
-    borderColor: '#DDD',
-  },
-  button: {
-    backgroundColor: '#4F6EF7',
-    borderRadius: 8,
-    paddingVertical: 12,
-    alignItems: 'center',
-  },
-  buttonText: {
-    color: '#FFF',
-    fontWeight: '600',
-    fontSize: 15,
-  },
   list: {
     paddingHorizontal: 16,
     gap: 10,
+    paddingBottom: 100,
   },
   empty: {
     textAlign: 'center',
@@ -181,5 +188,60 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#E74C3C',
     fontWeight: '600',
+  },
+  modalOverlay: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    padding: 24,
+    width: '85%',
+    gap: 12,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#1A1A1A',
+    marginBottom: 4,
+  },
+  input: {
+    backgroundColor: '#F9F9F9',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    fontSize: 15,
+    borderWidth: 1,
+    borderColor: '#DDD',
+  },
+  modalActions: {
+    flexDirection: 'row',
+    gap: 10,
+    marginTop: 4,
+  },
+  modalButton: {
+    flex: 1,
+    borderRadius: 8,
+    paddingVertical: 12,
+    alignItems: 'center',
+  },
+  cancelButton: {
+    backgroundColor: '#F0F0F0',
+  },
+  cancelButtonText: {
+    color: '#555',
+    fontWeight: '600',
+    fontSize: 15,
+  },
+  confirmButton: {
+    backgroundColor: '#4F6EF7',
+  },
+  confirmButtonText: {
+    color: '#FFF',
+    fontWeight: '600',
+    fontSize: 15,
   },
 });
