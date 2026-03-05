@@ -62,7 +62,7 @@ type FloatingActionButtonProps = {
 
 export function FloatingActionButton({
   actions,
-  mainColor = '#4F6EF7',
+  mainColor = '#7C3AED',
 }: FloatingActionButtonProps) {
   const isExpanded = useSharedValue(false);
 
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
   },
   itemContent: {
     fontSize: 18,
-    color: '#4F6EF7',
+    color: '#7C3AED',
     fontWeight: '600',
   },
 });
