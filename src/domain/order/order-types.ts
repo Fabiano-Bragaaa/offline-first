@@ -5,7 +5,6 @@ export type OrderStatusRaw = 'Pending' | 'In Progress' | 'Completed';
 export type OrderCreatePayload = {
   title: string;
   description: string;
-  status: OrderStatus;
   assigned_to: string;
 };
 
@@ -14,6 +13,19 @@ export type OrderUpdatePayload = {
   description?: string;
   status?: OrderStatus;
   assigned_to?: string;
+};
+
+export type OrderCreatePayloadApi = {
+  title: string;
+  description: string;
+  assignedTo: string;
+};
+
+export type OrderUpdatePayloadApi = {
+  title?: string;
+  description?: string;
+  status?: OrderStatusRaw;
+  assignedTo?: string;
 };
 
 export type Order = {

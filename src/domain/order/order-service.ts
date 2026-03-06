@@ -9,14 +9,13 @@ async function getAll(): Promise<Order[]> {
 }
 
 async function create(payload: OrderCreatePayload): Promise<Order> {
-  const rawPayload = {
+  const apiPayload = {
     title: payload.title,
     description: payload.description,
-    status: orderAdapter.toStatusRaw(payload.status),
     assignedTo: payload.assigned_to,
   };
-  const created = await orderLocal.create(rawPayload);
-  return orderAdapter.toOrder(created);
+  const response = await orderApi.create(apiPayload);
+  return orderAdapter.toOrder(response);
 }
 
 async function getById(id: string): Promise<Order | null> {
