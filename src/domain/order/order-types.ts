@@ -35,9 +35,9 @@ export type OrderRaw = {
   description: string;
   status: OrderStatusRaw;
   assignedTo: string;
-  createdAt: Date;
-  updatedAt: Date;
-  deletedAt?: Date | null;
+  createdAt: string;
+  updatedAt: string;
+  deletedAt?: string | null;
   completed: boolean;
   deleted: boolean;
 };

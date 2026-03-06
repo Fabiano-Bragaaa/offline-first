@@ -25,14 +25,15 @@ async function create({
   const realm = getRealm();
 
   const created = realm.write(() => {
+    const now = new Date().toISOString();
     return realm.create<OrderRaw>('ServiceOrder', {
       id: Date.now().toString(),
       title: title.trim(),
       description: description.trim(),
       status,
       assignedTo: assignedTo.trim(),
-      createdAt: new Date(),
-      updatedAt: new Date(),
+      createdAt: now,
+      updatedAt: now,
       deletedAt: null,
       completed: false,
       deleted: false,
@@ -50,8 +51,8 @@ async function remove(id: string): Promise<void> {
     if (!order) return;
 
     order.deleted = true;
-    order.deletedAt = new Date();
-    order.updatedAt = new Date();
+    order.deletedAt = new Date().toISOString();
+    order.updatedAt = new Date().toISOString();
   });
 }
 
@@ -79,7 +80,7 @@ async function update(id: string, payload: UpdatePayload): Promise<OrderRaw | nu
     if (payload.description !== undefined) order.description = payload.description.trim();
     if (payload.status !== undefined) order.status = payload.status;
     if (payload.assignedTo !== undefined) order.assignedTo = payload.assignedTo.trim();
-    order.updatedAt = new Date();
+    order.updatedAt = new Date().toISOString();
   });
 
   return order;

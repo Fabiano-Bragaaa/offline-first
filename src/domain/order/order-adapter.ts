@@ -24,9 +24,9 @@ function toOrder(raw: OrderRaw): Order {
     description: raw.description,
     status: STATUS_RAW_TO_DOMAIN[raw.status],
     assigned_to: raw.assignedTo,
-    created_at: raw.createdAt,
-    updated_at: raw.updatedAt,
-    deleted_at: raw.deletedAt,
+    created_at: new Date(raw.createdAt),
+    updated_at: new Date(raw.updatedAt),
+    deleted_at: raw.deletedAt ? new Date(raw.deletedAt) : null,
     completed: raw.completed,
     deleted: raw.deleted,
   };

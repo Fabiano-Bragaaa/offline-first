@@ -1,10 +1,11 @@
 import { orderAdapter } from './order-adapter';
+import { orderApi } from './order-api';
 import { orderLocal } from './order-local';
 import type { Order, OrderCreatePayload, OrderUpdatePayload } from './order-types';
 
 async function getAll(): Promise<Order[]> {
-  const results = await orderLocal.getAll();
-  return results.map(r => orderAdapter.toOrder(r));
+  const response = await orderApi.getAll();
+  return response.map(raw => orderAdapter.toOrder(raw));
 }
 
 async function create(payload: OrderCreatePayload): Promise<Order> {
