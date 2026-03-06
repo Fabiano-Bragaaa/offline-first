@@ -19,9 +19,9 @@ async function create(payload: OrderCreatePayload): Promise<Order> {
 }
 
 async function getById(id: string): Promise<Order | null> {
-  const raw = await orderLocal.getById(id);
-  if (!raw) return null;
-  return orderAdapter.toOrder(raw);
+  const response = await orderApi.getById(id);
+  if (!response) return null;
+  return orderAdapter.toOrder(response);
 }
 
 async function update(id: string, payload: OrderUpdatePayload): Promise<Order | null> {

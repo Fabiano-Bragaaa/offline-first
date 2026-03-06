@@ -11,7 +11,13 @@ async function create(payload: OrderCreatePayloadApi): Promise<OrderRaw> {
   return response.data;
 }
 
+async function getById(id: string): Promise<OrderRaw> {
+  const response = await api.get<OrderRaw>(`/work-orders/${id}`);
+  return response.data;
+}
+
 export const orderApi = {
   getAll,
   create,
+  getById,
 };
