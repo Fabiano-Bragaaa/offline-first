@@ -1,5 +1,5 @@
 import { getRealm } from '@infra';
-import type { OrderRaw } from './order-types';
+import type { OrderRaw, OrderStatusRaw } from './order-types';
 
 async function getAll(): Promise<OrderRaw[]> {
   const realm = getRealm();
@@ -58,9 +58,31 @@ async function getById(id: string): Promise<OrderRaw | null> {
   return order;
 }
 
+type UpdatePayload = {
+  title?: string;
+  description?: string;
+  status?: OrderStatusRaw;
+};
+
+async function update(id: string, payload: UpdatePayload): Promise<OrderRaw | null> {
+  const realm = getRealm();
+  const order = realm.objectForPrimaryKey<OrderRaw>('ServiceOrder', id);
+  if (!order || order.deleted) return null;
+
+  realm.write(() => {
+    if (payload.title !== undefined) order.title = payload.title.trim();
+    if (payload.description !== undefined) order.description = payload.description.trim();
+    if (payload.status !== undefined) order.status = payload.status;
+    order.updatedAt = new Date();
+  });
+
+  return order;
+}
+
 export const orderLocal = {
   getAll,
   getById,
   create,
+  update,
   remove,
 };

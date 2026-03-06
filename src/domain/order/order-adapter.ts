@@ -1,9 +1,20 @@
-import type { Order, OrderRaw, OrderStatus, OrderStatusRaw } from './order-types';
+import type {
+  Order,
+  OrderRaw,
+  OrderStatus,
+  OrderStatusRaw,
+} from './order-types';
 
 const STATUS_RAW_TO_DOMAIN: Record<OrderStatusRaw, OrderStatus> = {
   Pending: 'pending',
   'In Progress': 'in_progress',
   Completed: 'completed',
+};
+
+const STATUS_DOMAIN_TO_RAW: Record<OrderStatus, OrderStatusRaw> = {
+  pending: 'Pending',
+  in_progress: 'In Progress',
+  completed: 'Completed',
 };
 
 function toOrder(raw: OrderRaw): Order {
@@ -21,6 +32,11 @@ function toOrder(raw: OrderRaw): Order {
   };
 }
 
+export function toStatusRaw(status: OrderStatus): OrderStatusRaw {
+  return STATUS_DOMAIN_TO_RAW[status];
+}
+
 export const orderAdapter = {
   toOrder,
+  toStatusRaw,
 };

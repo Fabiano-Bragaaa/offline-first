@@ -2,6 +2,12 @@ export type OrderStatus = 'pending' | 'in_progress' | 'completed';
 
 export type OrderStatusRaw = 'Pending' | 'In Progress' | 'Completed';
 
+export type OrderUpdatePayload = {
+  title?: string;
+  description?: string;
+  status?: OrderStatus;
+};
+
 export type Order = {
   id: string;
   title: string;
