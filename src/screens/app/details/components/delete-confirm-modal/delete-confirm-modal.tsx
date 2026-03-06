@@ -34,6 +34,7 @@ export function DeleteConfirmModal({
           className="flex-1"
           onPress={onConfirm}
           loading={isLoading}
+          disabled={isLoading}
         />
       </View>
     </CenterModal>

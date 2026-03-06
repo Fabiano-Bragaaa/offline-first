@@ -103,6 +103,7 @@ export function EditOrderModal({
           preset="outline"
           className="flex-1"
           onPress={handleClose}
+          disabled={isLoading}
         />
         <Button
           title="Salvar"
