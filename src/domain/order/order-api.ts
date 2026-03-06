@@ -21,9 +21,14 @@ async function update(id: string, payload: OrderUpdatePayloadApi): Promise<Order
   return response.data;
 }
 
+async function remove(id: string): Promise<void> {
+  await api.delete<void>(`/work-orders/${id}`);
+}
+
 export const orderApi = {
   getAll,
   create,
   getById,
   update,
+  remove,
 };

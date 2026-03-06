@@ -1,6 +1,5 @@
 import { orderAdapter } from './order-adapter';
 import { orderApi } from './order-api';
-import { orderLocal } from './order-local';
 import type { Order, OrderCreatePayload, OrderUpdatePayload } from './order-types';
 
 async function getAll(): Promise<Order[]> {
@@ -39,7 +38,7 @@ async function update(id: string, payload: OrderUpdatePayload): Promise<Order> {
 }
 
 async function remove(id: string): Promise<void> {
-  return orderLocal.remove(id);
+  await orderApi.remove(id);
 }
 
 export const orderService = {
