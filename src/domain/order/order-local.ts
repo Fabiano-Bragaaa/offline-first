@@ -14,9 +14,11 @@ async function getAll(): Promise<OrderRaw[]> {
 async function create({
   title,
   description,
+  status,
 }: {
   title: string;
   description: string;
+  status: OrderStatusRaw;
 }): Promise<OrderRaw> {
   const realm = getRealm();
 
@@ -25,7 +27,7 @@ async function create({
       id: Date.now().toString(),
       title: title.trim(),
       description: description.trim(),
-      status: 'Pending',
+      status,
       assignedTo: 'Me',
       createdAt: new Date(),
       updatedAt: new Date(),

@@ -26,7 +26,7 @@ export function OptionPicker<T extends string>({
           {label}
         </Text>
       ) : null}
-      <View className="flex-row flex-wrap gap-2">
+      <View className="flex-row flex-wrap gap-2 mb-2">
         {options.map(opt => {
           const selected = value === opt.value;
           return (

@@ -1,7 +1,13 @@
 import { useState } from 'react';
 import { Alert, View } from 'react-native';
-import { useCreateOrder } from '@domain';
-import { Button, CenterModal, Text, TextInput } from '@components';
+import { useCreateOrder, type OrderStatus } from '@domain';
+import { Button, CenterModal, OptionPicker, Text, TextInput } from '@components';
+
+const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+  { value: 'pending', label: 'Pendente' },
+  { value: 'in_progress', label: 'Em andamento' },
+  { value: 'completed', label: 'Concluído' },
+];
 
 export type HomeModalProps = {
   visible: boolean;
@@ -12,15 +18,17 @@ export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
   const { mutate: createOrder } = useCreateOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [status, setStatus] = useState<OrderStatus>('pending');
 
   function handleAdd() {
     if (!title.trim() || !description.trim()) {
       Alert.alert('Preencha título e descrição');
       return;
     }
-    createOrder({ title: title.trim(), description: description.trim() });
+    createOrder({ title: title.trim(), description: description.trim(), status });
     setTitle('');
     setDescription('');
+    setStatus('pending');
     onRequestClose();
   }
 
@@ -38,6 +46,12 @@ export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
         placeholder="Ex: Veículo Honda Civic"
         value={description}
         onChangeText={setDescription}
+      />
+      <OptionPicker
+        label="Status"
+        options={STATUS_OPTIONS}
+        value={status}
+        onValueChange={setStatus}
       />
       <View className="flex-row gap-2.5 mt-1">
         <Button
