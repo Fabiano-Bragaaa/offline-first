@@ -1,10 +1,11 @@
 import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { useGetOrder, useDeleteOrder, type OrderStatus } from '@domain';
+import { useGetOrder, useDeleteOrder, useUpdateOrder, type OrderStatus } from '@domain';
 import { Button, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 
 import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-confirm-modal';
+import { EditOrderModal } from './components/edit-order-modal/edit-order-modal';
 
 const STATUS_LABEL: Record<OrderStatus, string> = {
   pending: 'Pendente',
@@ -22,12 +23,14 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
   const { id } = route.params;
   const { data: order, isLoading } = useGetOrder(id);
   const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [editModalVisible, setEditModalVisible] = useState(false);
   const { mutate: deleteOrder, isLoading: isDeleting } = useDeleteOrder({
     onSuccess: () => {
       setDeleteModalVisible(false);
       navigation.goBack();
     },
   });
+  const { mutate: updateOrder, isLoading: isUpdating } = useUpdateOrder();
 
   function handleConfirmDelete() {
     deleteOrder(id);
@@ -119,7 +122,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
           title="Editar"
           preset="primary"
           className="flex-1"
-          onPress={() => {}}
+          onPress={() => setEditModalVisible(true)}
         />
       </View>
 
@@ -128,6 +131,13 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
         onRequestClose={() => setDeleteModalVisible(false)}
         onConfirm={handleConfirmDelete}
         isLoading={isDeleting}
+      />
+      <EditOrderModal
+        visible={editModalVisible}
+        order={order}
+        onRequestClose={() => setEditModalVisible(false)}
+        onSave={payload => updateOrder({ id, ...payload })}
+        isLoading={isUpdating}
       />
     </Page>
   );
