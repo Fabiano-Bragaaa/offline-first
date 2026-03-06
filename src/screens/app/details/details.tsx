@@ -1,23 +1,13 @@
 import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { useGetOrder, useDeleteOrder, useUpdateOrder, type OrderStatus } from '@domain';
+import { useGetOrder, useDeleteOrder, useUpdateOrder } from '@domain';
 import { Button, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 
 import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-confirm-modal';
+import { DetailItem } from './components/detail-item/detail-item';
+import { DetailsHeader } from './components/details-header/details-header';
 import { EditOrderModal } from './components/edit-order-modal/edit-order-modal';
-
-const STATUS_LABEL: Record<OrderStatus, string> = {
-  pending: 'Pendente',
-  in_progress: 'Em andamento',
-  completed: 'Concluído',
-};
-
-const STATUS_COLOR: Record<OrderStatus, string> = {
-  pending: 'bg-yellow-100 text-yellow-700',
-  in_progress: 'bg-violet-100 text-violet-700',
-  completed: 'bg-green-100 text-green-700',
-};
 
 export function Details({ route, navigation }: AppScreenProps<'Details'>) {
   const { id } = route.params;
@@ -54,9 +44,6 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
     );
   }
 
-  const statusStyle = STATUS_COLOR[order.status] ?? 'bg-neutral-100 text-neutral-600';
-  const [statusBg, statusText] = statusStyle.split(' ');
-
   return (
     <Page>
       <TouchableOpacity
@@ -70,45 +57,15 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
       </TouchableOpacity>
 
       <View className="bg-white rounded-2xl p-5 gap-4 border border-gray-200">
-        <View className="flex-row items-start justify-between gap-2">
-          <Text variant="subheading" className="flex-1">
-            {order.title}
-          </Text>
-          <View className={`px-3 py-1 rounded-full ${statusBg}`}>
-            <Text variant="label" className={statusText}>
-              {STATUS_LABEL[order.status] ?? order.status}
-            </Text>
-          </View>
-        </View>
+        <DetailsHeader title={order.title} status={order.status} />
 
         <View className="h-px bg-gray-100" />
 
-        <View className="gap-1">
-          <Text variant="label" className="text-neutral-400 uppercase tracking-wide">
-            Descrição
-          </Text>
-          <Text variant="body" className="text-neutral-700">
-            {order.description}
-          </Text>
-        </View>
-
-        <View className="gap-1">
-          <Text variant="label" className="text-neutral-400 uppercase tracking-wide">
-            Responsável
-          </Text>
-          <Text variant="body" className="text-neutral-700">
-            {order.assigned_to}
-          </Text>
-        </View>
-
-        <View className="gap-1">
-          <Text variant="label" className="text-neutral-400 uppercase tracking-wide">
-            Criado em
-          </Text>
-          <Text variant="body" className="text-neutral-700">
-            {new Date(order.created_at).toLocaleDateString('pt-BR')}
-          </Text>
-        </View>
+        <DetailItem label="Descrição">{order.description}</DetailItem>
+        <DetailItem label="Responsável">{order.assigned_to}</DetailItem>
+        <DetailItem label="Criado em">
+          {new Date(order.created_at).toLocaleDateString('pt-BR')}
+        </DetailItem>
       </View>
 
       <View className="flex-row gap-3 mt-6">
