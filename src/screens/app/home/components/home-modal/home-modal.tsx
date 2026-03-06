@@ -1,13 +1,7 @@
 import { useState } from 'react';
 import { Alert, View } from 'react-native';
-import { useCreateOrder, type OrderStatus } from '@domain';
-import { Button, CenterModal, OptionPicker, Text, TextInput } from '@components';
-
-const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
-  { value: 'pending', label: 'Pendente' },
-  { value: 'in_progress', label: 'Em andamento' },
-  { value: 'completed', label: 'Concluído' },
-];
+import { useCreateOrder } from '@domain';
+import { Button, CenterModal, Text, TextInput } from '@components';
 
 export type HomeModalProps = {
   visible: boolean;
@@ -15,32 +9,43 @@ export type HomeModalProps = {
 };
 
 export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
-  const { mutate: createOrder } = useCreateOrder();
+  const { mutate: createOrder, isLoading } = useCreateOrder( {
+    onSuccess: () => {
+      resetForm();
+      onRequestClose();
+    },
+  },);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [assignedTo, setAssignedTo] = useState('');
-  const [status, setStatus] = useState<OrderStatus>('pending');
+
+  function resetForm() {
+    setTitle('');
+    setDescription('');
+    setAssignedTo('');
+  }
+
+  function handleClose() {
+    resetForm();
+    onRequestClose();
+  }
 
   function handleAdd() {
     if (!title.trim() || !description.trim() || !assignedTo.trim()) {
       Alert.alert('Preencha título, descrição e nome do técnico');
       return;
     }
-    createOrder({
-      title: title.trim(),
-      description: description.trim(),
-      assigned_to: assignedTo.trim(),
-      status,
-    });
-    setTitle('');
-    setDescription('');
-    setAssignedTo('');
-    setStatus('pending');
-    onRequestClose();
+    createOrder(
+      {
+        title: title.trim(),
+        description: description.trim(),
+        assigned_to: assignedTo.trim(),
+      },
+    );
   }
 
   return (
-    <CenterModal visible={visible} onRequestClose={onRequestClose}>
+    <CenterModal visible={visible} onRequestClose={handleClose}>
       <Text variant="subheading" className="mb-1">
         Nova Ordem
       </Text>
@@ -59,20 +64,22 @@ export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
         value={assignedTo}
         onChangeText={setAssignedTo}
       />
-      <OptionPicker
-        label="Status"
-        options={STATUS_OPTIONS}
-        value={status}
-        onValueChange={setStatus}
-      />
       <View className="flex-row gap-2.5 mt-1">
         <Button
           title="Cancelar"
           preset="outline"
           className="flex-1"
-          onPress={onRequestClose}
+          onPress={handleClose}
+          disabled={isLoading}
         />
-        <Button title="Adicionar" preset="primary" className="flex-1" onPress={handleAdd} />
+        <Button
+          title="Adicionar"
+          preset="primary"
+          className="flex-1"
+          onPress={handleAdd}
+          loading={isLoading}
+          disabled={isLoading}
+        />
       </View>
     </CenterModal>
   );
