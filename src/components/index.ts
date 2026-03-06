@@ -1,5 +1,6 @@
 export * from './button/button';
 export * from './center-modal/center-modal';
+export * from './divider/divider';
 export * from './icon/icon';
 export * from './floating-action-button/floating-action-button';
 export * from './option-picker/option-picker';

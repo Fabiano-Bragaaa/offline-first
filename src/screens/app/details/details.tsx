@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { useGetOrder, useDeleteOrder, useUpdateOrder } from '@domain';
-import { Button, Icon, Page, Text } from '@components';
+import { Button, Divider, Icon, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 import { colors, spacing } from '@theme';
 
@@ -58,7 +58,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
       <View className="bg-white rounded-2xl p-5 gap-4 border border-gray-200">
         <DetailsHeader title={order.title} status={order.status} />
 
-        <View className="h-px bg-gray-100" />
+        <Divider />
 
         <DetailItem label="Descrição">{order.description}</DetailItem>
         <DetailItem label="Responsável">{order.assigned_to}</DetailItem>
