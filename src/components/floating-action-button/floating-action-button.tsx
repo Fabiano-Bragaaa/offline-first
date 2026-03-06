@@ -1,5 +1,5 @@
 import React from 'react';
-import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, View } from 'react-native';
 import Animated, {
   interpolate,
   useAnimatedStyle,
@@ -10,6 +10,11 @@ import Animated, {
   withTiming,
 } from 'react-native-reanimated';
 
+import { colors, spacing } from '@theme';
+
+import type { IconName } from '../icon/icon';
+import { Icon } from '../icon/icon';
+
 const AnimatedPressable = Animated.createAnimatedComponent(Pressable);
 
 const SPRING_CONFIG = {
@@ -19,39 +24,42 @@ const SPRING_CONFIG = {
 };
 
 const OFFSET = 60;
+const ITEM_DELAY_MS = 70;
+const OPACITY_DURATION_MS = 120;
 
 type FABItemProps = {
   isExpanded: SharedValue<boolean>;
   index: number;
-  buttonLetter: string;
+  iconName: IconName;
   onPress?: () => void;
 };
 
-function FABItem({ isExpanded, index, buttonLetter, onPress }: FABItemProps) {
+function FABItem({ isExpanded, index, iconName, onPress }: FABItemProps) {
   const animatedStyles = useAnimatedStyle(() => {
     const moveValue = isExpanded.value ? OFFSET * (index + 1) : 0;
     const translateY = withSpring(-moveValue, SPRING_CONFIG);
-    const delay = index * 70;
+    const delay = index * ITEM_DELAY_MS;
     const opacityValue = isExpanded.value ? 1 : 0;
 
     return {
       transform: [{ translateY }],
-      opacity: withDelay(delay, withTiming(opacityValue, { duration: 120 })),
+      opacity: withDelay(delay, withTiming(opacityValue, { duration: OPACITY_DURATION_MS })),
     };
   });
 
   return (
     <AnimatedPressable
-      style={[animatedStyles, styles.shadow, styles.itemButton]}
+      style={animatedStyles}
+      className="absolute bottom-0 self-center mb-2 w-12 h-12 rounded-full bg-white items-center justify-center shadow-md"
       onPress={onPress}
     >
-      <Text style={styles.itemContent}>{buttonLetter}</Text>
+      <Icon name={iconName} size={spacing.s22} color={colors.primary} />
     </AnimatedPressable>
   );
 }
 
 type FABAction = {
-  label: string;
+  iconName: IconName;
   onPress?: () => void;
 };
 
@@ -62,7 +70,7 @@ type FloatingActionButtonProps = {
 
 export function FloatingActionButton({
   actions,
-  mainColor = '#7C3AED',
+  mainColor = colors.primary,
 }: FloatingActionButtonProps) {
   const isExpanded = useSharedValue(false);
 
@@ -84,13 +92,13 @@ export function FloatingActionButton({
   });
 
   return (
-    <View style={styles.container}>
+    <View className="absolute bottom-8 right-6 items-center">
       {actions.map((action, index) => (
         <FABItem
           key={index}
           isExpanded={isExpanded}
           index={index}
-          buttonLetter={action.label}
+          iconName={action.iconName}
           onPress={() => {
             isExpanded.value = false;
             action.onPress?.();
@@ -100,61 +108,13 @@ export function FloatingActionButton({
 
       <AnimatedPressable
         onPress={handlePress}
-        style={[
-          styles.shadow,
-          styles.mainButton,
-          { backgroundColor: mainColor },
-        ]}
+        style={{ backgroundColor: mainColor }}
+        className="z-10 w-14 h-14 rounded-full items-center justify-center shadow-md"
       >
-        <Animated.Text style={[styles.content, plusIconStyle]}>+</Animated.Text>
+        <Animated.View style={plusIconStyle}>
+          <Icon name="plus" color={colors.surface} />
+        </Animated.View>
       </AnimatedPressable>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'absolute',
-    bottom: 32,
-    right: 24,
-    alignItems: 'center',
-  },
-  mainButton: {
-    zIndex: 1,
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  itemButton: {
-    width: 48,
-    height: 48,
-    marginBottom: 8,
-    borderRadius: 24,
-    backgroundColor: '#FFF',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'absolute',
-    bottom: 0,
-    alignSelf: 'center',
-  },
-  shadow: {
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  content: {
-    fontSize: 24,
-    color: '#FFF',
-    fontWeight: '300',
-    lineHeight: 28,
-  },
-  itemContent: {
-    fontSize: 18,
-    color: '#7C3AED',
-    fontWeight: '600',
-  },
-});
