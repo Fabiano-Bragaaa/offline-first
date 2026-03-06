@@ -24,16 +24,18 @@ async function getById(id: string): Promise<Order | null> {
   return orderAdapter.toOrder(response);
 }
 
-async function update(id: string, payload: OrderUpdatePayload): Promise<Order | null> {
-  const rawPayload = {
+async function update(id: string, payload: OrderUpdatePayload): Promise<Order> {
+  const apiPayload = {
     title: payload.title,
     description: payload.description,
     status: payload.status !== undefined ? orderAdapter.toStatusRaw(payload.status) : undefined,
     assignedTo: payload.assigned_to,
   };
-  const raw = await orderLocal.update(id, rawPayload);
-  if (!raw) return null;
-  return orderAdapter.toOrder(raw);
+  const response = await orderApi.update(id, apiPayload);
+  if (!response) {
+    throw new Error('Ordem não encontrada');
+  }
+  return orderAdapter.toOrder(response);
 }
 
 async function remove(id: string): Promise<void> {

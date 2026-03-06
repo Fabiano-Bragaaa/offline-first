@@ -1,5 +1,5 @@
 import { api } from '@infra';
-import type { OrderCreatePayloadApi, OrderRaw } from './order-types';
+import type { OrderCreatePayloadApi, OrderRaw, OrderUpdatePayloadApi } from './order-types';
 
 async function getAll(): Promise<OrderRaw[]> {
   const response = await api.get<OrderRaw[]>('/work-orders');
@@ -16,8 +16,14 @@ async function getById(id: string): Promise<OrderRaw> {
   return response.data;
 }
 
+async function update(id: string, payload: OrderUpdatePayloadApi): Promise<OrderRaw> {
+  const response = await api.put<OrderRaw>(`/work-orders/${id}`, payload);
+  return response.data;
+}
+
 export const orderApi = {
   getAll,
   create,
   getById,
+  update,
 };
