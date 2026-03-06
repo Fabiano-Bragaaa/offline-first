@@ -6,12 +6,14 @@ export type OrderCreatePayload = {
   title: string;
   description: string;
   status: OrderStatus;
+  assigned_to: string;
 };
 
 export type OrderUpdatePayload = {
   title?: string;
   description?: string;
   status?: OrderStatus;
+  assigned_to?: string;
 };
 
 export type Order = {

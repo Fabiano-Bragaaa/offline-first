@@ -18,16 +18,23 @@ export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
   const { mutate: createOrder } = useCreateOrder();
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
   const [status, setStatus] = useState<OrderStatus>('pending');
 
   function handleAdd() {
-    if (!title.trim() || !description.trim()) {
-      Alert.alert('Preencha título e descrição');
+    if (!title.trim() || !description.trim() || !assignedTo.trim()) {
+      Alert.alert('Preencha título, descrição e nome do técnico');
       return;
     }
-    createOrder({ title: title.trim(), description: description.trim(), status });
+    createOrder({
+      title: title.trim(),
+      description: description.trim(),
+      assigned_to: assignedTo.trim(),
+      status,
+    });
     setTitle('');
     setDescription('');
+    setAssignedTo('');
     setStatus('pending');
     onRequestClose();
   }
@@ -46,6 +53,11 @@ export function HomeModal({ visible, onRequestClose }: HomeModalProps) {
         placeholder="Ex: Veículo Honda Civic"
         value={description}
         onChangeText={setDescription}
+      />
+      <TextInput
+        placeholder="Nome do técnico"
+        value={assignedTo}
+        onChangeText={setAssignedTo}
       />
       <OptionPicker
         label="Status"

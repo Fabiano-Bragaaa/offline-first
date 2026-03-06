@@ -13,7 +13,12 @@ export type EditOrderModalProps = {
   visible: boolean;
   order: Order | null;
   onRequestClose: () => void;
-  onSave: (payload: { title: string; description: string; status: OrderStatus }) => void;
+  onSave: (payload: {
+    title: string;
+    description: string;
+    status: OrderStatus;
+    assigned_to: string;
+  }) => void;
   isLoading?: boolean;
 };
 
@@ -26,22 +31,29 @@ export function EditOrderModal({
 }: EditOrderModalProps) {
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
+  const [assignedTo, setAssignedTo] = useState('');
   const [status, setStatus] = useState<OrderStatus>(order?.status ?? 'pending');
 
   useEffect(() => {
     if (visible && order) {
       setTitle(order.title);
       setDescription(order.description);
+      setAssignedTo(order.assigned_to);
       setStatus(order.status);
     }
   }, [visible, order]);
 
   function handleSave() {
-    if (!title.trim() || !description.trim()) {
-      Alert.alert('Preencha título e descrição');
+    if (!title.trim() || !description.trim() || !assignedTo.trim()) {
+      Alert.alert('Preencha título, descrição e nome do técnico');
       return;
     }
-    onSave({ title: title.trim(), description: description.trim(), status });
+    onSave({
+      title: title.trim(),
+      description: description.trim(),
+      assigned_to: assignedTo.trim(),
+      status,
+    });
     onRequestClose();
   }
 
@@ -61,6 +73,11 @@ export function EditOrderModal({
         placeholder="Descrição"
         value={description}
         onChangeText={setDescription}
+      />
+      <TextInput
+        placeholder="Nome do técnico"
+        value={assignedTo}
+        onChangeText={setAssignedTo}
       />
       <OptionPicker
         label="Status"

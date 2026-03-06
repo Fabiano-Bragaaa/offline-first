@@ -1,15 +1,9 @@
 import { queryKeys, useAppMutation } from '@infra';
 import { orderService } from '../order-service';
 import { useQueryClient } from '@tanstack/react-query';
-import type { OrderStatus } from '../order-types';
+import type {  OrderUpdatePayload } from '../order-types';
 
-type UpdateOrderPayload = {
-  id: string;
-  title?: string;
-  description?: string;
-  status?: OrderStatus;
-};
-
+type UpdateOrderPayload = OrderUpdatePayload & { id: string };
 export function useUpdateOrder() {
   const queryClient = useQueryClient();
 

@@ -12,6 +12,7 @@ async function create(payload: OrderCreatePayload): Promise<Order> {
     title: payload.title,
     description: payload.description,
     status: orderAdapter.toStatusRaw(payload.status),
+    assignedTo: payload.assigned_to,
   };
   const created = await orderLocal.create(rawPayload);
   return orderAdapter.toOrder(created);
@@ -25,8 +26,10 @@ async function getById(id: string): Promise<Order | null> {
 
 async function update(id: string, payload: OrderUpdatePayload): Promise<Order | null> {
   const rawPayload = {
-    ...payload,
+    title: payload.title,
+    description: payload.description,
     status: payload.status !== undefined ? orderAdapter.toStatusRaw(payload.status) : undefined,
+    assignedTo: payload.assigned_to,
   };
   const raw = await orderLocal.update(id, rawPayload);
   if (!raw) return null;

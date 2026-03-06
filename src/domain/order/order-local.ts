@@ -15,10 +15,12 @@ async function create({
   title,
   description,
   status,
+  assignedTo,
 }: {
   title: string;
   description: string;
   status: OrderStatusRaw;
+  assignedTo: string;
 }): Promise<OrderRaw> {
   const realm = getRealm();
 
@@ -28,7 +30,7 @@ async function create({
       title: title.trim(),
       description: description.trim(),
       status,
-      assignedTo: 'Me',
+      assignedTo: assignedTo.trim(),
       createdAt: new Date(),
       updatedAt: new Date(),
       deletedAt: null,
@@ -64,6 +66,7 @@ type UpdatePayload = {
   title?: string;
   description?: string;
   status?: OrderStatusRaw;
+  assignedTo?: string;
 };
 
 async function update(id: string, payload: UpdatePayload): Promise<OrderRaw | null> {
@@ -75,6 +78,7 @@ async function update(id: string, payload: UpdatePayload): Promise<OrderRaw | nu
     if (payload.title !== undefined) order.title = payload.title.trim();
     if (payload.description !== undefined) order.description = payload.description.trim();
     if (payload.status !== undefined) order.status = payload.status;
+    if (payload.assignedTo !== undefined) order.assignedTo = payload.assignedTo.trim();
     order.updatedAt = new Date();
   });
 
