@@ -21,7 +21,9 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
       navigation.goBack();
     },
   });
-  const { mutate: updateOrder, isLoading: isUpdating } = useUpdateOrder();
+  const { mutate: updateOrder, isLoading: isUpdating } = useUpdateOrder({
+    onSuccess: () => setEditModalVisible(false),
+  });
 
   function handleConfirmDelete() {
     deleteOrder(id);

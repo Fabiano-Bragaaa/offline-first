@@ -43,6 +43,19 @@ export function EditOrderModal({
     }
   }, [visible, order]);
 
+  function restoreToOrder() {
+    if (!order) return;
+    setTitle(order.title);
+    setDescription(order.description);
+    setAssignedTo(order.assigned_to);
+    setStatus(order.status);
+  }
+
+  function handleClose() {
+    restoreToOrder();
+    onRequestClose();
+  }
+
   function handleSave() {
     if (!title.trim() || !description.trim() || !assignedTo.trim()) {
       Alert.alert('Preencha título, descrição e nome do técnico');
@@ -54,13 +67,12 @@ export function EditOrderModal({
       assigned_to: assignedTo.trim(),
       status,
     });
-    onRequestClose();
   }
 
   if (!order) return null;
 
   return (
-    <CenterModal visible={visible} onRequestClose={onRequestClose}>
+    <CenterModal visible={visible} onRequestClose={handleClose}>
       <Text variant="subheading" className="mb-1">
         Editar ordem
       </Text>
@@ -90,8 +102,7 @@ export function EditOrderModal({
           title="Cancelar"
           preset="outline"
           className="flex-1"
-          onPress={onRequestClose}
-          disabled={isLoading}
+          onPress={handleClose}
         />
         <Button
           title="Salvar"
@@ -99,6 +110,7 @@ export function EditOrderModal({
           className="flex-1"
           onPress={handleSave}
           loading={isLoading}
+          disabled={isLoading}
         />
       </View>
     </CenterModal>
