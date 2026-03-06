@@ -1,7 +1,7 @@
 import { useMutation } from '@tanstack/react-query';
 
-export type useAppMutationOptions<TD> = {
-  onSuccess?: (data: TD) => void;
+export type useAppMutationOptions<TD, TV = void> = {
+  onSuccess?: (data: TD, variables: TV) => void;
   onError?: (error: Error) => void;
 };
 
@@ -13,7 +13,7 @@ type useAppMutationReturn<TD, TV> = {
 
 type useAppMutationParams<TD, TV> = {
   mutationFn: (variables: TV) => Promise<TD>;
-} & useAppMutationOptions<TD>;
+} & useAppMutationOptions<TD, TV>;
 
 export function useAppMutation<TD, TV>({
   mutationFn,
