@@ -7,6 +7,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 const queryClient = new QueryClient();
 
+if (__DEV__) {
+  require('./reactotron-config');
+}
+
 function App() {
   return (
     <SafeAreaProvider>
