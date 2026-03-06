@@ -3,10 +3,10 @@ import { Alert, View } from 'react-native';
 import type { Order, OrderStatus } from '@domain';
 import { Button, CenterModal, OptionPicker, Text, TextInput } from '@components';
 
-const STATUS_OPTIONS = [
-  { value: 'pending' as const, label: 'Pendente' },
-  { value: 'in_progress' as const, label: 'Em andamento' },
-  { value: 'completed' as const, label: 'Concluído' },
+const STATUS_OPTIONS: { value: OrderStatus; label: string }[] = [
+  { value: 'pending', label: 'Pendente' },
+  { value: 'in_progress', label: 'Em andamento' },
+  { value: 'completed', label: 'Concluído' },
 ];
 
 export type EditOrderModalProps = {
