@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
 import { useGetOrder, useDeleteOrder, useUpdateOrder } from '@domain';
-import { Button, Page, Text } from '@components';
+import { Button, Icon, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
+import { colors, spacing } from '@theme';
 
 import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-confirm-modal';
 import { DetailItem } from './components/detail-item/detail-item';
@@ -29,7 +30,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
   if (isLoading) {
     return (
       <Page className="items-center justify-center">
-        <ActivityIndicator size="large" color="#7C3AED" />
+        <ActivityIndicator size="large" color={colors.primary} />
       </Page>
     );
   }
@@ -48,11 +49,12 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
     <Page>
       <TouchableOpacity
         onPress={() => navigation.goBack()}
-        className="mt-2 mb-6 self-start"
+        className="mt-2 mb-6 self-start flex-row items-center gap-2"
         activeOpacity={0.6}
       >
-        <Text variant="body" className="text-[#7C3AED] font-semibold">
-          ← Voltar
+        <Icon name="arrow-left" size={spacing.s20} color={colors.primary} />
+        <Text variant="body" className="text-primary font-semibold">
+          Voltar
         </Text>
       </TouchableOpacity>
 

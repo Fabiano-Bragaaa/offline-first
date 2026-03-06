@@ -1,12 +1,13 @@
 import { cva } from 'class-variance-authority';
+import { colors } from '@theme';
 
 export const buttonContainer = cva(
   'flex-row items-center justify-center rounded-xl h-[50px] px-5',
   {
     variants: {
       preset: {
-        primary: 'bg-[#7C3AED]',
-        outline: 'border border-[#7C3AED] bg-transparent',
+        primary: 'bg-primary',
+        outline: 'border border-primary bg-transparent',
         destructive: 'bg-red-500',
       },
       disabled: {
@@ -27,16 +28,16 @@ export const buttonContainer = cva(
 );
 
 export const buttonIndicatorColor: Record<string, string> = {
-  primary: '#FFFFFF',
-  outline: '#7C3AED',
-  destructive: '#FFFFFF',
+  primary: colors.surface,
+  outline: colors.primary,
+  destructive: colors.surface,
 };
 
 export const buttonLabel = cva('text-base font-semibold', {
     variants: {
       preset: {
         primary: 'text-white',
-        outline: 'text-[#7C3AED]',
+        outline: 'text-primary',
         destructive: 'text-white',
       },
     disabled: {

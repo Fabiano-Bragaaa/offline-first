@@ -6,6 +6,7 @@ import {
   View,
 } from 'react-native';
 import { twMerge } from 'tailwind-merge';
+import { colors } from '@theme';
 
 import { Text } from '../text/text';
 
@@ -38,7 +39,7 @@ export function TextInput({
         <RNTextInput
           ref={inputRef}
           autoCapitalize="none"
-          placeholderTextColor="#737373"
+          placeholderTextColor={colors.inputPlaceholder}
           className={twMerge('flex-1 min-w-0 p-0 text-base text-neutral-900', className)}
           {...textInputProps}
         />

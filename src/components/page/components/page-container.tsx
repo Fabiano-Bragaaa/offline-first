@@ -1,6 +1,7 @@
 import { useAppSafeArea } from '@hooks';
 import { type PropsWithChildren } from 'react';
 import { ScrollView, View } from 'react-native';
+import { spacing } from '@theme';
 
 export function ViewPage({ children }: PropsWithChildren) {
   return <View className="flex-1 bg-neutral-100">{children}</View>;
@@ -14,7 +15,7 @@ export function ScrollPage({ children }: PropsWithChildren) {
       style={{ flex: 1 }}
       className="bg-neutral-100"
       showsVerticalScrollIndicator={false}
-      contentContainerStyle={{ flexGrow: 1, paddingBottom: bottom + 24 }}
+      contentContainerStyle={{ flexGrow: 1, paddingBottom: bottom + spacing.s24 }}
     >
       {children}
     </ScrollView>

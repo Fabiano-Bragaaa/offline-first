@@ -34,13 +34,13 @@ export function OptionPicker<T extends string>({
               key={opt.value}
               onPress={() => onValueChange(opt.value)}
               className={`rounded-lg px-3 py-2 border ${
-                selected ? 'bg-violet-100 border-[#7C3AED]' : 'bg-neutral-50 border-gray-200'
+                selected ? 'bg-primaryLight border-primary' : 'bg-neutral-50 border-gray-200'
               }`}
               activeOpacity={0.7}
             >
               <Text
                 variant="body"
-                className={selected ? 'font-semibold text-[#7C3AED]' : 'text-neutral-600'}
+                className={selected ? 'font-semibold text-primary' : 'text-neutral-600'}
               >
                 {opt.label}
               </Text>

@@ -3,6 +3,7 @@ import { FlatList, ListRenderItemInfo, StyleSheet } from 'react-native';
 import { Order, useOrderList } from '@domain';
 import { FloatingActionButton, Page, Text } from '@components';
 import { AppScreenProps } from '@routes';
+import { spacing } from '@theme';
 
 import { HomeModal } from './components/home-modal/home-modal';
 import { OrderCard } from './components/order-card/order-card';
@@ -47,7 +48,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
       <FloatingActionButton
         actions={[
           {
-            label: '📋',
+            iconName: 'clipboard-list',
             onPress: () => setModalVisible(true),
           },
         ]}
@@ -58,7 +59,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
 
 const styles = StyleSheet.create({
   container: {
-    gap: 10,
-    paddingBottom: 100,
+    gap: spacing.s10,
+    paddingBottom: spacing.s100,
   },
 });

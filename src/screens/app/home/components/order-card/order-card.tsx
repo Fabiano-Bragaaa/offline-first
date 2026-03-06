@@ -21,7 +21,7 @@ export function OrderCard({ item, onPress }: OrderCardProps) {
         <Text variant="caption" className="text-neutral-600 mt-0.5">
           {item.description}
         </Text>
-        <Text variant="label" className="text-[#7C3AED] mt-1">
+        <Text variant="label" className="text-primary mt-1">
           {item.status}
         </Text>
       </View>
