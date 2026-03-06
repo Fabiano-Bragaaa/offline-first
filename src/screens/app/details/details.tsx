@@ -48,14 +48,11 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
   return (
     <Page>
       <TouchableOpacity
-        onPress={() => navigation.goBack()}
-        className="mt-2 mb-6 self-start flex-row items-center gap-2"
+        onPress={navigation.goBack}
+        className="mt-2 mb-6 self-start"
         activeOpacity={0.6}
       >
         <Icon name="arrow-left" size={spacing.s20} color={colors.primary} />
-        <Text variant="body" className="text-primary font-semibold">
-          Voltar
-        </Text>
       </TouchableOpacity>
 
       <View className="bg-white rounded-2xl p-5 gap-4 border border-gray-200">
