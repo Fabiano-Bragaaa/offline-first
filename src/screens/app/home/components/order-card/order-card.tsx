@@ -1,6 +1,12 @@
 import { TouchableOpacity, View } from 'react-native';
-import type { Order } from '@domain';
+import type { Order, OrderStatus } from '@domain';
 import { Text } from '@components';
+
+const STATUS_LABEL: Record<OrderStatus, string> = {
+  pending: 'Pendente',
+  in_progress: 'Em andamento',
+  completed: 'Concluído',
+};
 
 export type OrderCardProps = {
   item: Order;
@@ -22,7 +28,7 @@ export function OrderCard({ item, onPress }: OrderCardProps) {
           {item.description}
         </Text>
         <Text variant="label" className="text-primary mt-1">
-          {item.status}
+          {STATUS_LABEL[item.status]}
         </Text>
       </View>
     </TouchableOpacity>
