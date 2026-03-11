@@ -1,5 +1,5 @@
 import { api } from '@infra';
-import type { OrderCreatePayloadApi, OrderRaw, OrderUpdatePayloadApi } from './order-types';
+import type { OrderCreatePayloadApi, OrderRaw, OrderSyncResponse, OrderUpdatePayloadApi } from './order-types';
 
 async function getAll(): Promise<OrderRaw[]> {
   const response = await api.get<OrderRaw[]>('/work-orders');
@@ -25,10 +25,18 @@ async function remove(id: string): Promise<void> {
   await api.delete<void>(`/work-orders/${id}`);
 }
 
+async function getSync(since: string): Promise<OrderSyncResponse> {
+  const response = await api.get<OrderSyncResponse>('/work-orders/sync', {
+    params: { since },
+  });
+  return response.data;
+}
+
 export const orderApi = {
   getAll,
   create,
   getById,
   update,
   remove,
+  getSync,
 };
