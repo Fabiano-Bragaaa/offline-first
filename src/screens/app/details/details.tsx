@@ -1,6 +1,4 @@
-import { useState } from 'react';
 import { ActivityIndicator, TouchableOpacity, View } from 'react-native';
-import { useGetOrder, useDeleteOrder, useUpdateOrder } from '@domain';
 import { Button, Divider, Icon, Page, Text } from '@components';
 import type { AppScreenProps } from '@routes';
 import { colors, spacing } from '@theme';
@@ -9,27 +7,12 @@ import { DeleteConfirmModal } from './components/delete-confirm-modal/delete-con
 import { DetailItem } from './components/detail-item/detail-item';
 import { DetailsHeader } from './components/details-header/details-header';
 import { EditOrderModal } from './components/edit-order-modal/edit-order-modal';
+import { useDetails } from './hooks/use-details';
 
 export function Details({ route, navigation }: AppScreenProps<'Details'>) {
   const { id } = route.params;
-  const { data: order, isLoading } = useGetOrder(id);
-  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
-  const [editModalVisible, setEditModalVisible] = useState(false);
-  const { mutate: deleteOrder, isLoading: isDeleting } = useDeleteOrder({
-    onSuccess: () => {
-      setDeleteModalVisible(false);
-      navigation.goBack();
-    },
-  });
-  const { mutate: updateOrder, isLoading: isUpdating } = useUpdateOrder({
-    onSuccess: () => setEditModalVisible(false),
-  });
-
-  function handleConfirmDelete() {
-    deleteOrder(id);
-  }
-
-  if (isLoading) {
+  const detailsState = useDetails(id);
+  if (detailsState.isLoading) {
     return (
       <Page className="items-center justify-center">
         <ActivityIndicator size="large" color={colors.primary} />
@@ -37,7 +20,7 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
     );
   }
 
-  if (!order) {
+  if (!detailsState.order) {
     return (
       <Page className="items-center justify-center">
         <Text variant="body" className="text-neutral-400">
@@ -58,14 +41,14 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
       </TouchableOpacity>
 
       <View className="bg-white rounded-2xl p-5 gap-4 border border-gray-200">
-        <DetailsHeader title={order.title} status={order.status} />
+        <DetailsHeader title={detailsState.order.title} status={detailsState.order.status} />
 
         <Divider />
 
-        <DetailItem label="Descrição">{order.description}</DetailItem>
-        <DetailItem label="Responsável">{order.assigned_to}</DetailItem>
+        <DetailItem label="Descrição">{detailsState.order.description}</DetailItem>
+        <DetailItem label="Responsável">{detailsState.order.assigned_to}</DetailItem>
         <DetailItem label="Criado em">
-          {new Date(order.created_at).toLocaleDateString('pt-BR')}
+          {new Date(detailsState.order.created_at).toLocaleDateString('pt-BR')}
         </DetailItem>
       </View>
 
@@ -74,28 +57,28 @@ export function Details({ route, navigation }: AppScreenProps<'Details'>) {
           title="Excluir"
           preset="destructive"
           className="flex-1"
-          onPress={() => setDeleteModalVisible(true)}
+          onPress={() => detailsState.setDeleteModalVisible(true)}
         />
         <Button
           title="Editar"
           preset="primary"
           className="flex-1"
-          onPress={() => setEditModalVisible(true)}
+          onPress={() => detailsState.setEditModalVisible(true)}
         />
       </View>
 
       <DeleteConfirmModal
-        visible={deleteModalVisible}
-        onRequestClose={() => setDeleteModalVisible(false)}
-        onConfirm={handleConfirmDelete}
-        isLoading={isDeleting}
+        visible={detailsState.deleteModalVisible}
+        onRequestClose={() => detailsState.setDeleteModalVisible(false)}
+        onConfirm={detailsState.handleConfirmDelete}
+        isLoading={detailsState.isDeleting}
       />
       <EditOrderModal
-        visible={editModalVisible}
-        order={order}
-        onRequestClose={() => setEditModalVisible(false)}
-        onSave={payload => updateOrder({ id, ...payload })}
-        isLoading={isUpdating}
+        visible={detailsState.editModalVisible}
+        order={detailsState.order}
+        onRequestClose={() => detailsState.setEditModalVisible(false)}
+        onSave={payload => detailsState.updateOrder({ id, ...payload })}
+        isLoading={detailsState.isUpdating}
       />
     </Page>
   );
