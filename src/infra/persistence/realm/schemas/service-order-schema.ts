@@ -14,5 +14,7 @@ export const ServiceOrderSchema: ObjectSchema = {
     deletedAt: 'string?',
     completed: 'bool',
     deleted: 'bool',
+    pendingAction: 'string?',
+    syncError: 'string?',
   },
 };
