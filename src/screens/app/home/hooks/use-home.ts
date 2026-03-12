@@ -1,10 +1,11 @@
 import { useOrderList, useSyncOrders } from "@domain";
 import { getOrderSyncActions } from "@services";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import NetInfo from '@react-native-community/netinfo';
 import { useEffect } from "react";
 
 export function useHome() {
+  const [modalVisible, setModalVisible] = useState(false);
   const { data: orders = [] } = useOrderList();
   const { sync, isSyncing } = useSyncOrders();
   const { setIsOnline } = getOrderSyncActions();
@@ -30,5 +31,7 @@ export function useHome() {
   return {
     orders,
     isSyncing,
+    modalVisible,
+    setModalVisible,
   };
 }
