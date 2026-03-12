@@ -182,43 +182,6 @@ sync()
 - A `Home` registra um listener em `NetInfo`.
 - Quando a conexão é restaurada, dispara `orderSync.sync()` automaticamente.
 
----
-
-### Status em relação ao desafio
-
-| **#** | **Item** | **Status** |
-| --- | --- | --- |
-| 1 | CRUD local com Realm | ✅ |
-| 2 | CRUD via API | ✅ |
-| 3 | Leitura, criação, edição e exclusão offline | ✅ |
-| 4 | Fila de pendências persistida no Realm | ✅ |
-| 5 | Sync up (local → servidor) com reconciliação de IDs | ✅ |
-| 6 | Sync down incremental (`/sync?since=...`) | ✅ |
-| 7 | Conflitos tratados com last-write-wins por `updatedAt` | ✅ |
-| 8 | Zustand para estado global de sync | ✅ |
-| 9 | Gatilho de sync ao restaurar conexão (NetInfo) | ✅ |
-| 10 | UI por-item para `syncError` | 🟡 estado existe, sem feedback visual |
-| 11 | `lastSyncAt` persistido entre reinícios | 🟡 apenas em memória (Zustand) |
-
----
-
-### Limitações conhecidas
-
-- **`lastSyncAt` em memória**: ao reiniciar o app, o próximo `syncDown` busca tudo desde o epoch. Não causa perda de dados, mas torna o primeiro sync após reinício mais pesado. Solução futura: persistir via `AsyncStorage` ou Realm.
-- **`syncError` sem UI por item**: o campo existe no Realm e no estado global (`lastSyncError`), mas não há indicador visual por ordem na lista informando que aquele item específico falhou no sync.
-- **Sem testes automatizados**: o foco deste projeto foi em qualidade arquitetural e comportamento correto do fluxo offline-first.
-
----
-
-### Possíveis melhorias futuras
-
-- Persistir `lastSyncAt` em armazenamento durável para sync incremental mais robusto entre reinícios.
-- Adicionar badge visual por ordem quando `syncError` estiver presente.
-- Implementar testes unitários para `order-local`, `order-sync` e use-cases.
-- Adicionar botão de "Sync manual" na Home com feedback visual de sucesso/erro.
-
----
-
 ### Screenshots / Demo
 
 > Adicione aqui imagens ou um GIF curto mostrando o fluxo principal:
