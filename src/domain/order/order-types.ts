@@ -41,6 +41,8 @@ export type Order = {
   deleted: boolean;
 };
 
+export type PendingAction = 'create' | 'update' | 'delete';
+
 export type OrderRaw = {
   id: string;
   title: string;
@@ -52,4 +54,16 @@ export type OrderRaw = {
   deletedAt?: string | null;
   completed: boolean;
   deleted: boolean;
+  pendingAction?: PendingAction | null;
+  syncError?: string | null;
+};
+
+export type OrderSyncItem = Omit<OrderRaw, 'pendingAction' | 'syncError'> & {
+  id: string | number;
+};
+
+export type OrderSyncResponse = {
+  created: OrderSyncItem[];
+  updated: OrderSyncItem[];
+  deleted: (string | number)[];
 };
