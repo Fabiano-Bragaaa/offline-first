@@ -1,7 +1,7 @@
 import { orderApi } from './order-api';
 import { orderLocal } from './order-local';
-import { useSyncStore } from './stores/use-sync-store';
 import type { OrderRaw } from './order-types';
+import { getOrderSyncState, getOrderSyncActions } from '@services';
 
 const EPOCH = '1970-01-01T00:00:00.000Z';
 
@@ -74,7 +74,8 @@ async function syncUp(): Promise<number> {
 }
 
 async function syncDown(): Promise<void> {
-  const { lastSyncAt, setLastSyncAt } = useSyncStore.getState();
+  const { lastSyncAt } = getOrderSyncState();
+  const { setLastSyncAt } = getOrderSyncActions();
   const since = lastSyncAt ?? EPOCH;
 
   const syncStartedAt = new Date().toISOString();
@@ -86,7 +87,7 @@ async function syncDown(): Promise<void> {
 }
 
 async function sync(): Promise<void> {
-  const { setIsSyncing, setLastSyncError } = useSyncStore.getState();
+  const { setIsSyncing, setLastSyncError } = getOrderSyncActions();
 
   setIsSyncing(true);
   setLastSyncError(null);
