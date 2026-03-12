@@ -1,97 +1,228 @@
-This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
+# FieldSync — Offline-first Work Orders
 
-# Getting Started
+FieldSync é um aplicativo **React Native** para gerenciamento de ordens de serviço com foco em **offline-first**.  
+O app permite listar, criar, editar e excluir ordens de serviço mesmo sem conexão, sincronizando com a API assim que a internet volta.
 
-> **Note**: Make sure you have completed the [Set Up Your Environment](https://reactnative.dev/docs/set-up-your-environment) guide before proceeding.
+A aplicação usa **Realm** como fonte de dados local e um fluxo de sincronização incremental com a API proposta no teste:
 
-## Step 1: Start Metro
+- `https://fieldsync.onrender.com/`
+  - `GET /work-orders`
+  - `GET /work-orders/:id`
+  - `POST /work-orders`
+  - `PUT /work-orders/:id`
+  - `DELETE /work-orders/:id`
+  - `GET /work-orders/sync?since=...`
 
-First, you will need to run **Metro**, the JavaScript build tool for React Native.
+> ⚠️ A API hiberna após inatividade e pode demorar alguns minutos para reiniciar.
 
-To start the Metro dev server, run the following command from the root of your React Native project:
+---
 
-```sh
-# Using npm
-npm start
+### Setup Environment
 
-# OR using Yarn
-yarn start
+Projeto criado com **React Native CLI** em TypeScript.
+
+Antes de rodar:
+
+- Configure o ambiente React Native:  
+  [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/docs/environment-setup)
+- Certifique-se de ter:
+  - Node.js
+  - `pnpm` instalado globalmente (`npm i -g pnpm`)
+  - Emulador Android ou simulador iOS configurado (ou dispositivo físico)
+
+---
+
+### Env Variables
+
+O app consome a API via variável de ambiente para a base URL.
+
+Crie um arquivo `.env` na raiz do projeto com:
+
+```env
+API_URL=https://fieldsync.onrender.com
 ```
 
-## Step 2: Build and run your app
+Você pode usar `.env.example` como referência:
 
-With Metro running, open a new terminal window/pane from the root of your React Native project, and use one of the following commands to build and run your Android or iOS app:
-
-### Android
-
-```sh
-# Using npm
-npm run android
-
-# OR using Yarn
-yarn android
+```env
+API_URL=https://fieldsync.onrender.com
 ```
 
-### iOS
+---
 
-For iOS, remember to install CocoaPods dependencies (this only needs to be run on first clone or after updating native deps).
+### Run
 
-The first time you create a new project, run the Ruby bundler to install CocoaPods itself:
-
-```sh
-bundle install
-```
-
-Then, and every time you update your native dependencies, run:
+**Instalar dependências**
 
 ```sh
-bundle exec pod install
+pnpm install
 ```
 
-For more information, please visit [CocoaPods Getting Started guide](https://guides.cocoapods.org/using/getting-started.html).
+**Rodar o Metro**
 
 ```sh
-# Using npm
-npm run ios
-
-# OR using Yarn
-yarn ios
+pnpm start
 ```
 
-If everything is set up correctly, you should see your new app running in the Android Emulator, iOS Simulator, or your connected device.
+**Rodar no Android**
 
-This is one way to run your app — you can also build it directly from Android Studio or Xcode.
+```sh
+pnpm android
+```
 
-## Step 3: Modify your app
+**Rodar no iOS**
 
-Now that you have successfully run the app, let's make changes!
+```sh
+pnpm ios
+```
 
-Open `App.tsx` in your text editor of choice and make some changes. When you save, your app will automatically update and reflect these changes — this is powered by [Fast Refresh](https://reactnative.dev/docs/fast-refresh).
+---
 
-When you want to forcefully reload, for example to reset the state of your app, you can perform a full reload:
+### 🛠 Tech and Libraries
 
-- **Android**: Press the <kbd>R</kbd> key twice or select **"Reload"** from the **Dev Menu**, accessed via <kbd>Ctrl</kbd> + <kbd>M</kbd> (Windows/Linux) or <kbd>Cmd ⌘</kbd> + <kbd>M</kbd> (macOS).
-- **iOS**: Press <kbd>R</kbd> in iOS Simulator.
+- [React Native](https://reactnative.dev/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Realm](https://www.mongodb.com/docs/realm/sdk/react-native/) — banco de dados local principal
+- [Axios](https://github.com/axios/axios) — HTTP client
+- [TanStack React Query](https://tanstack.com/query/latest) — fetching, cache e sincronização de server state
+- [Zustand](https://zustand-demo.pmnd.rs/) — estado global de sincronização (`isSyncing`, `lastSyncAt`, `isOnline`, `lastSyncError`)
+- [React Navigation](https://reactnavigation.org/) — navegação
+- [NativeWind](https://www.nativewind.dev/) — Tailwind CSS para React Native
+- [@react-native-community/netinfo](https://github.com/react-native-netinfo/react-native-netinfo) — detecção de conectividade
 
-## Congratulations! :tada:
+---
 
-You've successfully run and modified your React Native App. :partying_face:
+### Arquitetura
 
-### Now what?
+A aplicação é organizada em camadas para separar responsabilidades:
 
-- If you want to add this new React Native code to an existing application, check out the [Integration guide](https://reactnative.dev/docs/integration-with-existing-apps).
-- If you're curious to learn more about React Native, check out the [docs](https://reactnative.dev/docs/getting-started).
+- **`src/domain/order`**
+  - `order-types.ts` — tipos de domínio (`Order`) e tipos brutos (`OrderRaw`, payloads da API)
+  - `order-adapter.ts` — conversão `OrderRaw ↔ Order` e mapeamento de status
+  - `order-local.ts` — acesso ao Realm (CRUD local, pendências, `applySync`, `upsertFromServer`, `reconcileCreate`)
+  - `order-api.ts` — chamadas HTTP para a API (`GET/POST/PUT/DELETE/sync`)
+  - `order-service.ts` — fachada de domínio usada pela UI (sempre offline-first, conversa só com Realm)
+  - `order-sync.ts` — orquestração de sincronização (`syncUp`, `syncDown`, `sync`)
+  - `use-cases/*` — hooks de aplicação (`useOrderList`, `useGetOrder`, `useCreateOrder`, `useUpdateOrder`, `useDeleteOrder`, `useSyncOrders`)
 
-# Troubleshooting
+- **`src/services/order`**
+  - `use-order.ts` — store global (Zustand) com estado de sync e funções `getOrderSyncState` / `getOrderSyncActions`
+  - `order-type.ts` — tipos do estado de sync
 
-If you're having issues getting the above steps to work, see the [Troubleshooting](https://reactnative.dev/docs/troubleshooting) page.
+- **`src/infra`**
+  - `persistence/realm` — configuração do Realm + schema + migration (v1 → v2 com campos de sync)
+  - `persistence/api` — configuração do Axios com `baseURL = API_URL`
+  - `operations` — wrappers de React Query (`useAppQuery`, `useAppMutation`, `queryKeys`)
 
-# Learn More
+- **`src/screens/app`**
+  - `home` — lista de ordens do Realm, criação via modal, gatilho de sincronização, lógica agrupada em `useHome`
+  - `details` — detalhes da ordem, edição e exclusão, lógica agrupada em `useDetails`
+  - componentes de UI específicos (cards, headers, modais)
 
-To learn more about React Native, take a look at the following resources:
+---
 
-- [React Native Website](https://reactnative.dev) - learn more about React Native.
-- [Getting Started](https://reactnative.dev/docs/environment-setup) - an **overview** of React Native and how setup your environment.
-- [Learn the Basics](https://reactnative.dev/docs/getting-started) - a **guided tour** of the React Native **basics**.
-- [Blog](https://reactnative.dev/blog) - read the latest official React Native **Blog** posts.
-- [`@facebook/react-native`](https://github.com/facebook/react-native) - the Open Source; GitHub **repository** for React Native.
+### Fluxo Offline-first e Sincronização
+
+#### Fonte de verdade
+
+A **fonte única de verdade** para a UI é o Realm:
+
+- `Home` e `Details` consomem dados via `orderService`, que lê de `orderLocal` (Realm).
+- A API nunca é chamada diretamente pela UI.
+
+#### Escritas offline-first
+
+| Operação | Comportamento |
+| --- | --- |
+| `create` | Salva no Realm com `id = local_<timestamp>`, `pendingAction = 'create'` |
+| `update` | Atualiza no Realm; se `pendingAction` era `'create'`, mantém `'create'`; senão `'update'` |
+| `remove` | Se `pendingAction = 'create'` → delete definitivo; senão soft delete com `pendingAction = 'delete'` |
+
+#### Fila de pendências
+
+- Persistida no próprio Realm via campo `pendingAction` (`'create' | 'update' | 'delete' | null`).
+- Campo `syncError` guarda a mensagem da última falha de sync por item.
+- `orderLocal.getPending()` retorna todos os registros com pendência para o `syncUp`.
+
+#### Sync Up (local → servidor)
+
+Para cada item pendente:
+
+- `'create'` → `POST /work-orders` → `reconcileCreate` troca o `id` local pelo id definitivo do servidor
+- `'update'` → `PUT /work-orders/:id` → `upsertFromServer` aplica o retorno do servidor no Realm
+- `'delete'` → `DELETE /work-orders/:id`
+  - sucesso ou `404` → `clearPending`
+  - qualquer outro erro → `setSyncError` por item, incrementa `failedCount`
+
+#### Sync Down (servidor → local)
+
+- Chama `GET /work-orders/sync?since=lastSyncAt`
+- Aplica `created` e `updated` via `upsertFromServer` (com last-write-wins por `updatedAt`)
+- Aplica `deleted` marcando registros como `deleted = true` (se não houver pendência local)
+- Atualiza `lastSyncAt` no Zustand
+
+#### Ordem da sincronização
+
+```
+sync()
+  ├── syncUp()   → push: local → servidor
+  └── syncDown() → pull: servidor → local (via /sync?since=...)
+```
+
+#### Estratégia de conflito
+
+- **last-write-wins por `updatedAt`**:
+  - Se o item local tiver `pendingAction`, compara `updatedAt` local com `updatedAt` do servidor.
+  - Local mais recente → preserva local.
+  - Servidor mais recente → aplica servidor e limpa `pendingAction` + `syncError`.
+- No `syncUp` para `update`: sempre envia o estado local atual, depois reaplica o retorno do servidor via `upsertFromServer` para reconciliar campos normalizados e `updatedAt`.
+
+#### Gatilho de sincronização
+
+- A `Home` registra um listener em `NetInfo`.
+- Quando a conexão é restaurada, dispara `orderSync.sync()` automaticamente.
+
+---
+
+### Status em relação ao desafio
+
+| **#** | **Item** | **Status** |
+| --- | --- | --- |
+| 1 | CRUD local com Realm | ✅ |
+| 2 | CRUD via API | ✅ |
+| 3 | Leitura, criação, edição e exclusão offline | ✅ |
+| 4 | Fila de pendências persistida no Realm | ✅ |
+| 5 | Sync up (local → servidor) com reconciliação de IDs | ✅ |
+| 6 | Sync down incremental (`/sync?since=...`) | ✅ |
+| 7 | Conflitos tratados com last-write-wins por `updatedAt` | ✅ |
+| 8 | Zustand para estado global de sync | ✅ |
+| 9 | Gatilho de sync ao restaurar conexão (NetInfo) | ✅ |
+| 10 | UI por-item para `syncError` | 🟡 estado existe, sem feedback visual |
+| 11 | `lastSyncAt` persistido entre reinícios | 🟡 apenas em memória (Zustand) |
+
+---
+
+### Limitações conhecidas
+
+- **`lastSyncAt` em memória**: ao reiniciar o app, o próximo `syncDown` busca tudo desde o epoch. Não causa perda de dados, mas torna o primeiro sync após reinício mais pesado. Solução futura: persistir via `AsyncStorage` ou Realm.
+- **`syncError` sem UI por item**: o campo existe no Realm e no estado global (`lastSyncError`), mas não há indicador visual por ordem na lista informando que aquele item específico falhou no sync.
+- **Sem testes automatizados**: o foco deste projeto foi em qualidade arquitetural e comportamento correto do fluxo offline-first.
+
+---
+
+### Possíveis melhorias futuras
+
+- Persistir `lastSyncAt` em armazenamento durável para sync incremental mais robusto entre reinícios.
+- Adicionar badge visual por ordem quando `syncError` estiver presente.
+- Implementar testes unitários para `order-local`, `order-sync` e use-cases.
+- Adicionar botão de "Sync manual" na Home com feedback visual de sucesso/erro.
+
+---
+
+### Screenshots / Demo
+
+> Adicione aqui imagens ou um GIF curto mostrando o fluxo principal:
+> - Lista de ordens (online e offline)
+> - Criação/edição offline
+> - Reconexão e sincronização automática
+> - Tela de detalhes
