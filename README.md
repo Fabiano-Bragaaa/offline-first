@@ -182,10 +182,10 @@ sync()
 - A `Home` registra um listener em `NetInfo`.
 - Quando a conexão é restaurada, dispara `orderSync.sync()` automaticamente.
 
-### Screenshots / Demo
+---
 
-> Adicione aqui imagens ou um GIF curto mostrando o fluxo principal:
-> - Lista de ordens (online e offline)
-> - Criação/edição offline
-> - Reconexão e sincronização automática
-> - Tela de detalhes
+### Screenshots
+
+| Home | Criar Ordem | Detalhes | Editar Ordem | Excluir Ordem |
+| :--: | :---------: | :------: | :----------: | :-----------: |
+| <img src="docs/images/home.png" width="200" /> | <img src="docs/images/create-order.png" width="200" /> | <img src="docs/images/order-details.png" width="200" /> | <img src="docs/images/edit-order.png" width="200" /> | <img src="docs/images/delete-order.png" width="200" /> |
