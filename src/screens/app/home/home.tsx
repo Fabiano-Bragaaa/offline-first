@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { ActivityIndicator, FlatList, ListRenderItemInfo, StyleSheet, View } from 'react-native';
 import { Order } from '@domain';
 import { FloatingActionButton, Page, Text } from '@components';
@@ -10,8 +10,7 @@ import { OrderCard } from './components/order-card/order-card';
 import { useHome } from './hooks/use-home';
 
 export function Home({ navigation }: AppScreenProps<'Home'>) {
- const { orders, isSyncing } = useHome();
- const [modalVisible, setModalVisible] = useState(false);
+  const homeState = useHome();
 
   function renderItem({ item }: ListRenderItemInfo<Order>) {
     return (
@@ -38,7 +37,7 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
     );
   }
 
-  if (isSyncing) {
+  if (homeState.isSyncing) {
     return (
       <View className="flex-1 items-center justify-center">
         <ActivityIndicator size="large" color={colors.primary} />
@@ -48,9 +47,8 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
 
   return (
     <Page>
-
       <FlatList
-        data={orders}
+        data={homeState.orders}
         keyExtractor={item => item.id}
         contentContainerStyle={styles.container}
         ListEmptyComponent={renderEmptyComponent}
@@ -60,15 +58,15 @@ export function Home({ navigation }: AppScreenProps<'Home'>) {
       />
 
       <HomeModal
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
+        visible={homeState.modalVisible}
+        onRequestClose={() => homeState.setModalVisible(false)}
       />
 
       <FloatingActionButton
         actions={[
           {
             iconName: 'clipboard-list',
-            onPress: () => setModalVisible(true),
+            onPress: () => homeState.setModalVisible(true),
           },
         ]}
       />
