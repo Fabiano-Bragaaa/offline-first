@@ -3,3 +3,4 @@ export * from './use-delete-order';
 export * from './use-get-order';
 export * from './use-order-list';
 export * from './use-update-order';
+export * from './use-sync-orders';
